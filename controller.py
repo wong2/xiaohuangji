@@ -33,9 +33,9 @@ def reply(data, message):
     bot = bots[current_bot_index]
     result = bot.addComment(data)
 
-    # 如果连续5次遇到 code 1031，则认为被封了，换下一个账号
+    # 如果连续8次遇到 code 1031，则认为被封了，换下一个账号
     if result['code'] == 1031:
-        reach_limit_time, MAX_LIMIT_TRY = r.incr('reach_limit_time'), 5
+        reach_limit_time, MAX_LIMIT_TRY = r.incr('reach_limit_time'), 8
         if int(reach_limit_time) == MAX_LIMIT_TRY:
             r.set('reach_limit_time', 0)
             current_bot_index = r.incr('current_bot_index')
