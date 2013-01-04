@@ -85,13 +85,14 @@ def handle(bot, notification):
     q.enqueue(reply, payloads, content)
 
 # 得到人人上的通知，处理之
-def process(bot):
+def process(bot, just_clear=False):
     notifications = bot.getNotifications()
 
     for notification in notifications:
         bot.get(notification['rmessagecallback'])
-        #print notification
-        #return
+        if just_clear:
+            print notification
+            return
         try:
             handle(bot, notification)
         except Exception, e:
@@ -99,4 +100,4 @@ def process(bot):
 
 while True:
     map(process, bots)
-    time.sleep(1)
+    #time.sleep(1)
