@@ -6,17 +6,18 @@ import cookielib
 class SimSimi:
 
     def __init__(self):
-        self.session = requests.Session()
-        self.session.get('http://www.simsimi.com/talk.htm')
+        r = requests.get('http://www.simsimi.com/talk.htm')
+        self.cookies = r.cookies
 
         self.headers = {
-            'Referer':'http://www.simsimi.com/talk.htm' 
+            'Referer': 'http://www.simsimi.com/talk.htm'
         }
         self.url = 'http://www.simsimi.com/func/req?lc=ch&msg=%s'
 
     def chat(self, message=''):
         if message.strip():
-            r = self.session.get(self.url % message.strip(), headers=self.headers)
+            r = requests.get(self.url % message.strip(), headers=self.headers, cookies=self.cookies)
+            self.cookies = r.cookies
             try:
                 return r.json()['response']
             except:
@@ -27,4 +28,3 @@ class SimSimi:
 if __name__ == '__main__':
     simi = SimSimi()
     print simi.chat('最后一个问题')
-

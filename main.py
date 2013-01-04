@@ -90,6 +90,8 @@ def process(bot):
 
     for notification in notifications:
         bot.get(notification['rmessagecallback'])
+        #print notification
+        #return
         try:
             handle(bot, notification)
         except Exception, e:
@@ -97,3 +99,4 @@ def process(bot):
 
 while True:
     map(process, bots)
+    time.sleep(1)
