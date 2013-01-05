@@ -2,6 +2,14 @@
 
 """
 Copyright (c) 2012 wong2 <wonderfuly@gmail.com>
+Copyright (c) 2012 Qijiang Fan <fqj1994@gmail.com>
+
+Original Author:
+    Wong2 <wonderfuly@gmail.com>
+Changes Statement:
+    Changes made by Qijiang Fan <fqj1994@gmail.com> on 
+    Jan 6 2013:
+        Add keywordfilter bindings.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -28,6 +36,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from renren import RenRen
 from ai import magic
+from filter_manager import questionfilter, answerfilter
 import redis
 try:
     from my_accounts import accounts
@@ -53,7 +62,7 @@ def reply(data, message):
     if 'author_name' in data and  '小黄鸡' in data['author_name'].encode('utf-8'):
         return
 
-    data['message'] = magic(message)
+    data['message'] = answerfilter(magic(questionfilter(message)))
 
     current_bot_index = int(r.get('current_bot_index') or 0)
     bot = bots[current_bot_index]
