@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
 
+# 主程序，轮询通知，处理通知
+
 from renren import RenRen
 from ntype import NTYPES
 from multiprocessing import Pool
@@ -104,6 +106,7 @@ def process(bot, just_clear=False):
         try:
             handle(bot, notification)
             redis_conn.set(notification['nid'], True)
+            redis_conn.incr('comment_count')
         except Exception, e:
             print e
 
@@ -111,4 +114,7 @@ def process(bot, just_clear=False):
 
 if __name__ == '__main__':
     while True:
-        map(process, bots)
+        try:
+            map(process, bots)
+        except:
+            pass
