@@ -90,14 +90,25 @@ def process(bot, just_clear=False):
 
     for notification in notifications:
         bot.get(notification['rmessagecallback'])
-        if just_clear:
-            print notification
+
+        # 如果已经处理过了，拜拜
+        if redis_conn.get(notification['nid']):
+            print 'duplicate', notification
             return
+
+        # 如果只是要清理通知，拜拜
+        if just_clear:
+            print 'clear', notification
+            return
+
         try:
             handle(bot, notification)
+            redis_conn.set(notification['nid'], True)
         except Exception, e:
             print e
 
-while True:
-    map(process, bots)
-    #time.sleep(1)
+        print ''
+
+if __name__ == '__main__':
+    while True:
+        map(process, bots)
