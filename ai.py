@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
 
+# 小黄鸡的ai，先自己尝试处理，没结果则交给simsimi
+
 import time
 from simsimi import SimSimi
 

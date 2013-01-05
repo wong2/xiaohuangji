@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
 
+# 小黄鸡们
+
 from renren import RenRen
 from ai import magic
 import redis

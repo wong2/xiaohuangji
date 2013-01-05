@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
 
+# 人人各种接口
+
 import requests
 import json
 import re
@@ -153,10 +155,15 @@ class RenRen:
         print 'comment sent', r.json()
         return r.json()
 
+    # 访问某人页面
+    def visit(self, uid):
+        self.get('http://www.renren.com/' + str(uid) + '/profile')
+
 if __name__ == '__main__':
     renren = RenRen()
-    renren.login('email', 'password')
+    renren.login('wonderfu.ly@gmail.com', 'renrenren')
     #renren.loginByCookie('cookie.txt')
     info = renren.getUserInfo()
     print 'hello', info['hostname']
-    print renren.getNotifications()
+    #print renren.getNotifications()
+    renren.visit(328748051)

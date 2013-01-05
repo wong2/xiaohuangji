@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
 
+# 从simsimi读数据
+
 import requests
 import cookielib
 
