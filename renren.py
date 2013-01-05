@@ -185,7 +185,7 @@ class RenRen:
 
 if __name__ == '__main__':
     renren = RenRen()
-    renren.login('wonderfu.ly@gmail.com', 'renrenren')
+    renren.login('email', 'password')
     #renren.loginByCookie('cookie.txt')
     info = renren.getUserInfo()
     print 'hello', info['hostname']
