@@ -23,7 +23,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-from filterconfig import rules_question, rules_answer
+try:
+    from my_filterconfig import rules_question, rules_answer
+except:
+    from filterconfig import rules_question, rules_answer
 
 
 # 屏蔽
