@@ -19,17 +19,7 @@ def my_logic(text):
 # some magic here
 def magic(text):
     text = text.strip()
-
-    # 先自己试着处理，否则给simsimi
-    try:
-        my_result = my_logic(text)
-    except:
-        my_result = None
-
-    if my_result:
-        return my_result
-    else:
-        return simi.chat(text).encode('utf-8')
+    return simi.chat(text).encode('utf-8')
 
 if __name__ == '__main__':
     print magic('/Q 今天天气怎么样？ /A 大雪')
