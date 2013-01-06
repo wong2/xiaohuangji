@@ -12,7 +12,6 @@ from rq.scripts import setup_default_arguments
 
 from controller import bots, getNotiData, self_match_pattern
 
-
 def format_colors(record, handler):
     from rq.utils import make_colorizer
     if record.level == logbook.WARNING:
