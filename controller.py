@@ -66,24 +66,8 @@ def reply(data, message):
 
     data['message'] = answerfilter(magic(questionfilter(message)))
 
-    current_bot_index = int(r.get('current_bot_index') or 0)
-    bot = bots[current_bot_index]
+    bot = bots[0] # 现在只有一只小鸡了，且没了评论限制
     result = bot.addComment(data)
 
-    # 如果连续8次遇到 code 1031，则认为被封了，换下一个账号
-    if result['code'] == 1031:
-        reach_limit_time, MAX_LIMIT_TRY = r.incr('reach_limit_time'), 8
-        if int(reach_limit_time) == MAX_LIMIT_TRY:
-            r.set('reach_limit_time', 0)
-            current_bot_index = r.incr('current_bot_index')
-            if int(current_bot_index) >= len(bots):
-                r.set('current_bot_index', 0)
-                raise Exception('SHIT!!!!!!ALL BOTS ARE DOWN!!!!!!!!!!')
-            else:
-                raise Exception('bot %s reach comment limit' % bot.email)
-        else:
-            print 'maybe comment limit', bot.email
-    elif result['code'] == 0:
-        r.set('reach_limit_time', 0)
-    else:
+    if result['code'] != 0:
         raise Exception('Error sending comment by bot %s' % bot.email)
