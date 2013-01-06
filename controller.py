@@ -37,7 +37,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 from renren import RenRen
 from ai import magic
 from filter_manager import questionfilter, answerfilter
-import redis
 try:
     from my_accounts import accounts
 except:
@@ -54,9 +53,6 @@ def getBots(accounts):
     return bots
 
 bots = getBots(accounts)
-
-r = redis.Redis()
-
 
 # 得到数据，找到答案，发送回复
 def reply(data, message):
