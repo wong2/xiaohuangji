@@ -36,6 +36,7 @@ from rq import Queue
 import requests
 import time
 import re
+import sys
 from controller import bots, reply
 
 # 匹配自己名字的正则
@@ -68,50 +69,12 @@ def parseNotification(notification):
 def handle(bot, notification):
     data = parseNotification(notification)
 
-    print time.strftime('%Y-%m-%d %I:%M:%S', time.localtime(time.time())), data
+    print time.strftime('%Y-%m-%d %I:%M:%S', time.localtime(time.time())), 'got notification'
     ntype = data['ntype']
 
-    if not ntype in NTYPES.values():
-        return
-
-    owner_id, doing_id = data['owner_id'], data['doing_id']
-
-    payloads = {
-      'owner_id': owner_id,
-      'doing_id': doing_id
-    }
-
-    content = ''
-    if ntype == NTYPES['at_in_status']:
-        doing = bot.getDoingById(owner_id, doing_id)
-        if doing:
-            content = self_match_pattern.sub('', doing['content'].encode('utf-8'))
-        else:
-            return
-
-    elif ntype == NTYPES['reply_in_status_comment']:
-        reply_id = data['reply_id']
-        comment = bot.getCommentById(owner_id, doing_id, reply_id)
-        if comment:
-            payloads.update({
-                'author_id': comment['ownerId'],
-                'author_name': comment['ubname'],
-                'reply_id': reply_id
-            })
-            content = comment['replyContent']
-            content_s = content.split(u'\uff1a', 1)
-            if len(content_s) == 1:
-                content_s = content.split(': ', 1)
-            if len(content_s) == 1:
-                content_s = content.split(':', 1)
-            content = content_s[-1]
-            print content
-        else:
-            return
-
-    print ''
-    # 进入消息队列
-    q.enqueue(reply, payloads, content)
+    if ntype in NTYPES.values():
+        # 进入消息队列
+        q.enqueue(reply, data)
 
 
 # 得到人人上的通知，处理之
@@ -140,9 +103,14 @@ def process(bot, just_clear=False):
 
         print ''
 
-if __name__ == '__main__':
+def main():
     while True:
         try:
             map(process, bots)
+        except KeyboardInterrupt:
+            sys.exit()
         except:
             pass
+
+if __name__ == '__main__':
+    main()

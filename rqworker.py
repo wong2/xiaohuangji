@@ -10,7 +10,7 @@ from rq.scripts import setup_redis
 from rq.scripts import read_config_file
 from rq.scripts import setup_default_arguments
 
-from controller import bots, r
+from controller import bots, getNotiData, self_match_pattern
 
 
 def format_colors(record, handler):
