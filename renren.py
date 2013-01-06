@@ -35,6 +35,7 @@ from pyquery import PyQuery
 from ntype import NTYPES
 from encrypt import encryptString
 
+
 class RenRen:
 
     def __init__(self, email=None, pwd=None):
@@ -80,7 +81,6 @@ class RenRen:
             self.getToken(r.text)
         else:
             print 'login error', r.text
-
 
     def getEncryptKey(self):
         r = requests.get('http://login.renren.com/ajax/getEncryptKey')
@@ -165,7 +165,7 @@ class RenRen:
         if data.get('reply_id', None):
             payloads.update({
                 'rpLayer': 1,
-                'replyTo': data['author_id'], 
+                'replyTo': data['author_id'],
                 'replyName': data['author_name'],
                 'secondaryReplyId': data['reply_id'],
                 'c': '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message'])

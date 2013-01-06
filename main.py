@@ -34,7 +34,8 @@ from redis import Redis
 from pyquery import PyQuery
 from rq import Queue
 import requests
-import time, re
+import time
+import re
 from controller import bots, reply
 
 # 匹配自己名字的正则
@@ -43,6 +44,7 @@ self_match_pattern = re.compile('<a.*@小黄鸡.*</a>')
 # 消息队列
 redis_conn = Redis()
 q = Queue(connection=redis_conn)
+
 
 # 解析一条通知的数据
 def parseNotification(notification):
@@ -62,10 +64,11 @@ def parseNotification(notification):
         'reply_id': int(source_params.get('repliedId', 0))
     }
 
+
 def handle(bot, notification):
     data = parseNotification(notification)
 
-    print time.strftime('%Y-%m-%d %I:%M:%S',time.localtime(time.time())), data
+    print time.strftime('%Y-%m-%d %I:%M:%S', time.localtime(time.time())), data
     ntype = data['ntype']
 
     if not ntype in NTYPES.values():
@@ -109,6 +112,7 @@ def handle(bot, notification):
     print ''
     # 进入消息队列
     q.enqueue(reply, payloads, content)
+
 
 # 得到人人上的通知，处理之
 def process(bot, just_clear=False):

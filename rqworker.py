@@ -12,6 +12,7 @@ from rq.scripts import setup_default_arguments
 
 from controller import bots, r
 
+
 def format_colors(record, handler):
     from rq.utils import make_colorizer
     if record.level == logbook.WARNING:

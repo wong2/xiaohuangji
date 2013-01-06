@@ -7,7 +7,7 @@ Copyright (c) 2012 Qijiang Fan <fqj1994@gmail.com>
 Original Author:
     Wong2 <wonderfuly@gmail.com>
 Changes Statement:
-    Changes made by Qijiang Fan <fqj1994@gmail.com> on 
+    Changes made by Qijiang Fan <fqj1994@gmail.com> on
     Jan 6 2013:
         Add keywordfilter bindings.
 
@@ -43,6 +43,7 @@ try:
 except:
     from accounts import accounts
 
+
 def getBots(accounts):
     bots = []
     for account in accounts:
@@ -56,10 +57,11 @@ bots = getBots(accounts)
 
 r = redis.Redis()
 
+
 # 得到数据，找到答案，发送回复
 def reply(data, message):
     # 不要自问自答
-    if 'author_name' in data and  '小黄鸡' in data['author_name'].encode('utf-8'):
+    if 'author_name' in data and '小黄鸡' in data['author_name'].encode('utf-8'):
         return
 
     data['message'] = answerfilter(magic(questionfilter(message)))
@@ -85,4 +87,3 @@ def reply(data, message):
         r.set('reach_limit_time', 0)
     else:
         raise Exception('Error sending comment by bot %s' % bot.email)
-

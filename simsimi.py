@@ -29,6 +29,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import requests
 import cookielib
 
+
 class SimSimi:
 
     def __init__(self):
