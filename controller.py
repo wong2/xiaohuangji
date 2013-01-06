@@ -66,7 +66,7 @@ def reply(data, message):
 
     data['message'] = answerfilter(magic(questionfilter(message)))
 
-    bot = bots[0] # 现在只有一只小鸡了，且没了评论限制
+    bot = bots[0]  # 现在只有一只小鸡了，且没了评论限制
     result = bot.addComment(data)
 
     if result['code'] != 0:
