@@ -82,8 +82,6 @@ def process(bot, just_clear=False):
     notifications = bot.getNotifications()
 
     for notification in notifications:
-        bot.get(notification['rmessagecallback'])
-
         # 如果已经处理过了，拜拜
         if redis_conn.get(notification['nid']):
             print 'duplicate', notification
@@ -94,9 +92,11 @@ def process(bot, just_clear=False):
             print 'clear', notification
             return
 
+        bot.get(notification['rmessagecallback'])
+
         try:
-            handle(bot, notification)
             redis_conn.set(notification['nid'], True)
+            handle(bot, notification)
             redis_conn.incr('comment_count')
         except Exception, e:
             print e

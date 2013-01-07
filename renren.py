@@ -34,6 +34,7 @@ from urlparse import urlparse, parse_qsl
 from pyquery import PyQuery
 from ntype import NTYPES
 from encrypt import encryptString
+import sys
 
 
 class RenRen:
@@ -119,10 +120,13 @@ class RenRen:
         return r.json()
 
     def getNotifications(self):
-        url = 'http://notify.renren.com/rmessage/get?getbybigtype=1&bigtype=1&limit=999&begin=0&view=16'
+        url = 'http://notify.renren.com/rmessage/get?getbybigtype=1&bigtype=1&limit=999&begin=0&view=16&random=' + str(random.random())
         r = self.get(url)
-        r.raise_for_status()
-        return r.json()
+        try:
+            result = json.loads(r.text, strict=False)
+        except:
+            print 'error'
+        return result 
 
     def getDoings(self, uid, page=0):
         url = 'http://status.renren.com/GetSomeomeDoingList.do?userId=%s&curpage=%d' % (str(uid), page)
