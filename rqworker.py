@@ -11,6 +11,7 @@ from rq.scripts import read_config_file
 from rq.scripts import setup_default_arguments
 
 from controller import bots, getNotiData, self_match_pattern
+from failure_handler import do_job_failure_handler_have_a_rest
 
 def format_colors(record, handler):
     from rq.utils import make_colorizer
@@ -77,6 +78,7 @@ def main():
     try:
         queues = map(Queue, args.queues)
         w = Worker(queues, name=args.name)
+        w.push_exc_handler(do_job_failure_handler_have_a_rest)
 
         # Should we configure Sentry?
         if args.sentry_dsn:
