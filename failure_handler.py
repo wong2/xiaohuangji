@@ -53,7 +53,7 @@ def job_failure_counter(prefix):
     continuous_failure_times = int(r.get(n_continuous_failure_times) or 0)
     failure_times += 1
     r.incr(n_failure_times)
-    if time.time() - last_error_time <= 5:  # 将5s内的两次失败计作连续的失败
+    if n_continuous_failure_times >= REST_THRESHOLD or time.time() - last_error_time <= 5:  # 将5s内的两次失败计作连续的失败
         continuous_failure_times += 1
         r.incr(n_continuous_failure_times)
     else:
@@ -88,7 +88,7 @@ def do_job_failure_handler_have_a_rest(job, exc_type, exc_val, traceback):
         return True
     prefix = '.'.join(worker.name.split('.')[:-1])
     job_failure_counter(prefix)
-    if continuous_failure_times > REST_THRESHOLD:
+    if continuous_failure_times >= REST_THRESHOLD:
         print '%d continuous failed jobs. Sleep 60 seconds.' % (REST_THRESHOLD)
         time.sleep(60)
         reset_failure(prefix)
