@@ -131,7 +131,7 @@ class RenRen:
     def getDoings(self, uid, page=0):
         url = 'http://status.renren.com/GetSomeomeDoingList.do?userId=%s&curpage=%d' % (str(uid), page)
         r = self.get(url)
-        return r.json()['doingArray']
+        return r.json().get('doingArray', [])
 
     def getDoingById(self, owner_id, doing_id):
         doings = self.getDoings(owner_id)
