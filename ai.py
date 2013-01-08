@@ -32,17 +32,14 @@ from simsimi import SimSimi
 simi = SimSimi()
 
 
-def my_logic(text):
-    # 教学模式: /Q python和ruby哪个好？ /A php最好！
-    if '/Q' in text and '/A' in text:
-        _, right_part = text.split('/Q', 1)
-        question, answer = [s.strip() for s in right_part.split('/A', 1)]
-        if question and answer:
-            simi.teach(question, answer)
-            return '学会啦'
+def my_logic(data, text):
+    # 求来访
+    if '求来访' in text:
+        user_id = data.get('author_id', '') or data['owner_id']
+        bots[0].visit(user_id)
+        return '我来啦'
 
     return None
-
 
 # some magic here
 def magic(text):
