@@ -30,7 +30,7 @@ from rq import Worker
 import redis
 try:
     from settings import REDIS_HOST
-else:
+except:
     REDIS_HOST = 'localhost'
 
 r = redis.Redis(host=REDIS_HOST)
