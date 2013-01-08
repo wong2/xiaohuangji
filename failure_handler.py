@@ -26,9 +26,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import time
 import sys
-from settings import REDIS_HOST
 from rq import Worker
 import redis
+try:
+    from settings import REDIS_HOST
+else:
+    REDIS_HOST = 'localhost'
 
 r = redis.Redis(host=REDIS_HOST)
 
