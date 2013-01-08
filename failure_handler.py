@@ -26,7 +26,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import time
 import sys
-from settings import REDIS_HOST
+try:
+    from settings import REDIS_HOST
+except:
+    REDIS_HOST = 'localhost'
+try:
+    from settings import REST_THRESHOLD
+except:
+    REST_THRESHOLD = 10
 from rq import Worker
 import redis
 
@@ -44,14 +51,19 @@ def job_failure_counter(prefix):
     failure_times = int(r.get(n_failure_times) or 0)
     last_error_time = float(r.get(n_last_error_time) or 0)
     continuous_failure_times = int(r.get(n_continuous_failure_times) or 0)
+    failure_times += 1
+    r.incr(n_failure_times)
     if time.time() - last_error_time <= 5:  # 将5s内的两次失败计作连续的失败
         continuous_failure_times += 1
+        r.incr(n_continuous_failure_times)
     else:
         continuous_failure_times = 1
+        r.set(n_continuous_failure_times, 1)
     last_error_time = time.time()
-    r.set(n_failure_times, failure_times)
     r.set(n_last_error_time, last_error_time)
-    r.set(n_continuous_failure_times, continuous_failure_times)
+    failure_times = int(r.get(n_failure_times) or 0)
+    continuous_failure_times = int(r.get(n_continuous_failure_times) or 0)
+
 
 
 # 得到 worker
@@ -70,9 +82,9 @@ def do_job_failure_handler_have_a_rest(job, exc_type, exc_val, traceback):
     worker = get_worker(traceback)
     if not worker:
         return True
-    prefix = worker.name
+    prefix = '.'.join(worker.name.split('.')[:-1])
     job_failure_counter(prefix)
-    if continuous_failure_times % 10 == 0:
-        print '10 continuous failed jobs. Sleep 60 seconds.'
+    if continuous_failure_times % REST_THRESHOLD == 0:
+        print '%d continuous failed jobs. Sleep 60 seconds.' % (REST_THRESHOLD)
         time.sleep(60)
     return True
