@@ -33,10 +33,20 @@ def remove(s):
         i = s.find('<')
         if i < 0:
             ans += s
-            return ans
+            break
         ans += s[:i]
         s = s[i+1:]
         s = s[s.find('>')+1:]
+    s=ans
+    ans=''
+    while True:
+        i = s.find('[')
+        if i < 0:
+            ans += s
+            return ans
+        ans += s[:i]
+        s = s[i+1:]
+        s = s[s.find(']')+1:]
 
 
 def wikipedia(message,word):
