@@ -70,6 +70,5 @@ def wikipedia(message,word):
 
 
 if __name__ == '__main__':
-    print wikipedia('三国')
-    print wikipedia('ibm')
-    print wikipedia('IBM')
+    print wikipedia('节操是什么？','是什么')
+
