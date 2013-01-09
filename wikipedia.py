@@ -1,4 +1,4 @@
-#coding = utf8
+#-*-coding:utf-8-*-
 
 """
 Copyright (c) 2012 yangzhe1991 <ud1937@gmail.com>
@@ -21,7 +21,7 @@ the following conditions:
     CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    """
+"""
 
 import urllib2
 import urllib
@@ -39,8 +39,9 @@ def remove(s):
         s = s[s.find('>')+1:]
 
 
-def wikipedia(title):
+def wikipedia(message,word):
     try:
+        title=message[:message.find(word)]
         url = 'http://zh.wikipedia.org/w/index.php?%s' % urllib.urlencode({'title': title, 'printable': 'yes', 'variant': 'zh-cn'})
         req = urllib2.Request(url, headers={'User-Agent': "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-US) AppleWebKit/533.3 (KHTML, like Gecko) Chrome/5.0.354.0 Safari/533.3"})
         wp = urllib2.urlopen(req, timeout=10)
@@ -56,6 +57,8 @@ def wikipedia(title):
         return remove(html)
     except:
         return None
+
+
 if __name__ == '__main__':
     print wikipedia('三国')
     print wikipedia('ibm')
