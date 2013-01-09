@@ -62,16 +62,25 @@ class RenRen:
 
     def login(self, email, pwd):
         key = self.getEncryptKey()
+
+        if self.getShowCaptcha(email) == 1:
+            self.getICode()
+            print "Please input the code in file 'icode.jpg':"
+            icode = raw_input().strip()
+        else:
+            icode = ''
+
         data = {
             'email': email,
             'origURL': 'http://www.renren.com/home',
-            'icode': '',
+            'icode': icode,
             'domain': 'renren.com',
             'key_id': 1,
             'captcha_type': 'web_login',
             'password': encryptString(key['e'], key['n'], pwd) if key['isEncrypt'] else pwd,
             'rkey': key['rkey']
         }
+        print "login data: %s" % data
         url = 'http://www.renren.com/ajaxLogin/login?1=1&uniqueTimestamp=%f' % random.random()
         r = self.post(url, data)
         result = r.json()
@@ -82,6 +91,23 @@ class RenRen:
             self.getToken(r.text)
         else:
             print 'login error', r.text
+
+    def getICode(self):
+        # What's wrong with the following?
+        #r = self.get('http://icode.renren.com/getcode.do', \
+        #        data = {'t':'web_login','rnd':random.random()})
+        r = self.get("http://icode.renren.com/getcode.do?t=web_login&rnd=%s" % random.random())
+        if r.status_code == 200 and r.raw.headers['content-type'] == 'image/jpeg':
+            with open('icode.jpg', 'wb') as f:
+                for chunk in r.iter_content():
+                    f.write(chunk)
+        else:
+            print "get icode failure"
+        
+
+    def getShowCaptcha(self, email = None):
+        r = self.post('http://www.renren.com/ajax/ShowCaptcha', data = {'email':email})
+        return r.json()
 
     def getEncryptKey(self):
         r = requests.get('http://login.renren.com/ajax/getEncryptKey')
