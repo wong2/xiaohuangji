@@ -87,7 +87,8 @@ def do_job_failure_handler_have_a_rest(job, exc_type, exc_val, traceback):
     if not worker:
         return True
     prefix = '.'.join(worker.name.split('.')[:-1])
-    if 'simsimi.com' in exc_val:
+    if 'simsimi.com' in str(exc_val):
+        print 'count'
         job_failure_counter(prefix)
     if continuous_failure_times >= REST_THRESHOLD:
         print '%d continuous failed jobs. Sleep 60 seconds.' % (REST_THRESHOLD)
