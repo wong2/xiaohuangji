@@ -28,18 +28,15 @@ from wikipedia import wikipedia
 
 #关键字过滤，首项为keyword，第二项为对应的函数，依次过滤，直到找到匹配,如添加其他功能也可在此修改
 #函数的第一个参数为message全文，第二个参数为所触发的keyword
-keywords=[
-        ('是什么', wikipedia), 
-        ('是谁', wikipedia), 
-        ]
-    
+keywords = [('是什么', wikipedia), ('是谁', wikipedia)]
+
 
 def filter(message):
     if not message:
         return None
     for pair in keywords:
         if message.find(pair[0]) >= 0:
-            return pair[1](message,pair[0])
+            return pair[1](message, pair[0])
     return None
 
 
@@ -48,5 +45,3 @@ if __name__ == '__main__':
     print filter('节操是什么')
     print filter('刘邦是谁')
     print filter('节操是谁')
-            
-
