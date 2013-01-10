@@ -110,9 +110,6 @@ class RenRen:
             print 'login error', r.text
 
     def getICode(self, fn):
-        # What's wrong with the following?
-        #r = self.get('http://icode.renren.com/getcode.do', \
-        #        data = {'t':'web_login','rnd':random.random()})
         r = self.get("http://icode.renren.com/getcode.do?t=web_login&rnd=%s" % random.random())
         if r.status_code == 200 and r.raw.headers['content-type'] == 'image/jpeg':
             with open(fn, 'wb') as f:
