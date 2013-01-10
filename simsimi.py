@@ -47,8 +47,6 @@ except:
 class SimSimi:
 
     def __init__(self):
-        r = requests.get('http://www.simsimi.com/talk.htm')
-        self.chat_cookies = r.cookies
 
         self.headers = {
             'Referer': 'http://www.simsimi.com/talk.htm'
@@ -56,6 +54,13 @@ class SimSimi:
 
         self.chat_url = 'http://www.simsimi.com/func/req?lc=ch&msg=%s'
         self.api_url = 'http://api.simsimi.com/request.p?key=%s&lc=ch&ft=1.0&text=%s'
+
+        if not SIMSIMI_KEY:
+            self.initSimSimiCookie()
+
+    def initSimSimiCookie(self):
+        r = requests.get('http://www.simsimi.com/talk.htm')
+        self.chat_cookies = r.cookies
 
     def getSimSimiResult(self, message, method='normal'):
         if method == 'normal':
