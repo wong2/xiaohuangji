@@ -65,14 +65,15 @@ def getBots(accounts):
         return bots
     else:
         r = redis.Redis(REDIS_HOST)
+        cookies = r.get('xiaohuangji_cookies')
         bot = RenRen()
-        bot._loginByCookie(r.get('xiaohuangji_cookies'))
-        bot.email = ''
-        if bot.token:
-            return [bot]
+        if cookies:
+            bot._loginByCookie(cookies)
+            bot.email = ''
         else:
-            return []
-
+            account = accounts[0]
+            bot.login(account[0], account[1])
+        return [bot] if bot.token else []
 
 bots = getBots(accounts)
 
