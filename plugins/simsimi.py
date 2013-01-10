@@ -107,4 +107,4 @@ def handle(data, bot):
     return simsimi.chat(data['message'])
 
 if __name__ == '__main__':
-    print handle({'message': '最后一个问题'})
+    print handle({'message': '最后一个问题'}, None)
