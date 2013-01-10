@@ -23,27 +23,16 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+# 求来访功能
 
-# 小黄鸡的ai，先自己尝试处理，没结果则交给simsimi
+import random
 
-import pkgutil
-import plugins
+def test(data, bot):
+    return '求来访' in data['message']
 
-plugin_modules = []
-for plugin_name in plugins.__all__:
-    __import__('plugins.%s' % plugin_name)
-    plugin_modules.append(getattr(plugins, plugin_name))
-
-# some magic here
-def magic(data, bot=None):
-    for plugin_module in plugin_modules:
-        try:
-            if plugin_module.test(data, bot):
-                return plugin_module.handle(data, bot)
-        except:
-            continue
-
-    return '呵呵'
+def handle(data, bot):
+    bot.visit(data.get('author_id', 'owner_id'))
+    return random.choice(['我来也', '马上就到', '来啦', '在路上了'])
 
 if __name__ == '__main__':
-    print magic({'message': '今天天气怎么样?'})
+    print test({'message': '小鸡鸡求来访'})

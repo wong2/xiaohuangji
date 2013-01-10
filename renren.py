@@ -229,8 +229,6 @@ class RenRen:
 if __name__ == '__main__':
     renren = RenRen()
     renren.login('email', 'password')
-    #renren.loginByCookie('cookie.txt')
     info = renren.getUserInfo()
     print 'hello', info['hostname']
-    #print renren.getNotifications()
     renren.visit(328748051)

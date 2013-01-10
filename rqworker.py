@@ -12,6 +12,7 @@ from rq.scripts import setup_default_arguments
 
 from controller import bots, getNotiData, self_match_pattern
 from failure_handler import do_job_failure_handler_have_a_rest
+from ai import plugin_modules
 
 def format_colors(record, handler):
     from rq.utils import make_colorizer

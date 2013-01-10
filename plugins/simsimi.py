@@ -26,6 +26,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # 从simsimi读数据
 
+import sys
+sys.path.append('..')
+
 import requests
 import cookielib
 import socket
@@ -89,12 +92,19 @@ class SimSimi:
                         cursor.execute(sql, (message, answer, workerhostname))
                     except Exception as e:
                         print e
-                return answer
+                return answer.encode('utf-8')
             except:
-                return u'呵呵'
+                return '呵呵'
         else:
-            return u'叫我干嘛'
+            return '叫我干嘛'
+
+simsimi = SimSimi()
+
+def test(data, bot):
+    return True
+
+def handle(data, bot):
+    return simsimi.chat(data['message'])
 
 if __name__ == '__main__':
-    simi = SimSimi()
-    print simi.chat('最后一个问题')
+    print handle({'message': '最后一个问题'})
