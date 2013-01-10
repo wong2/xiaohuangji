@@ -132,7 +132,9 @@ def reply(data):
 
     print 'handling comment', data, '\n'
 
-    data['message'] = answerfilter(magic(questionfilter(message)))
+    data['message'] = questionfilter(message)
+    answer = magic(data, bot)
+    data['message'] = answerfilter(answer)
 
     result = bot.addComment(data)
 
