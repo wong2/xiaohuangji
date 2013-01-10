@@ -103,10 +103,9 @@ class RenRen:
                     f.write(chunk)
         else:
             print "get icode failure"
-        
 
-    def getShowCaptcha(self, email = None):
-        r = self.post('http://www.renren.com/ajax/ShowCaptcha', data = {'email':email})
+    def getShowCaptcha(self, email=None):
+        r = self.post('http://www.renren.com/ajax/ShowCaptcha', data={'email': email})
         return r.json()
 
     def getEncryptKey(self):
