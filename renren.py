@@ -46,6 +46,12 @@ class RenRen:
         if email and pwd:
             self.login(email, pwd)
 
+    def _loginByCookie(self, cookie_str):
+        cookie_dict = dict([v.split('=', 1) for v in cookie_str.strip().split(';')])
+        self.session.cookies = requests.utils.cookiejar_from_dict(cookie_dict)
+
+        self.getToken()
+
     def loginByCookie(self, cookie_path):
         with open(cookie_path) as fp:
             cookie_str = fp.read()

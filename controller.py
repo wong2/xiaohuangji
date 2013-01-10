@@ -39,23 +39,40 @@ from ai import magic
 from ntype import NTYPES
 from filter_manager import questionfilter, answerfilter
 import re
+import sys
+import redis
 try:
     from my_accounts import accounts
 except:
     from accounts import accounts
+try:
+    from settings import REDIS_HOST
+except:
+    REDIS_HOST = 'localhost'
 
 # 匹配自己名字的正则
 self_match_pattern = re.compile('<a.*@小黄鸡.*</a>')
 
 # 登录账号得到bot
 def getBots(accounts):
-    bots = []
-    for account in accounts:
+    if 'main.py' in sys.argv[0]:
+        bots = []
+        for account in accounts:
+            bot = RenRen()
+            bot.login(account[0], account[1])
+            print bot.email, 'login'
+            bots.append(bot)
+        return bots
+    else:
+        r = redis.Redis(REDIS_HOST)
         bot = RenRen()
-        bot.login(account[0], account[1])
-        print bot.email, 'login'
-        bots.append(bot)
-    return bots
+        bot._loginByCookie(r.get('xiaohuangji_cookies'))
+        bot.email = ''
+        if bot.token:
+            return [bot]
+        else:
+            return []
+
 
 bots = getBots(accounts)
 

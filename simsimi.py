@@ -28,47 +28,65 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import requests
 import cookielib
+import MySQLdb
+import socket
+from settings import MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DBNAME
+try:
+    from settings import SIMSIMI_KEY
+except:
+    SIMSIMI_KEY = ''
+
+mysqldb = MySQLdb.connect(host=MYSQL_HOST, port=3306, user=MYSQL_USER, passwd=MYSQL_PASS, db=MYSQL_DBNAME, charset='utf8', use_unicode=False)
+cursor = mysqldb.cursor()
+try:
+    workerhostname = socket.gethostname()
+except:
+    workerhostname = 'unknown'
 
 
 class SimSimi:
 
     def __init__(self):
-        r = requests.get('http://www.simsimi.com/talk.htm')
-        self.chat_cookies = r.cookies
-
-        r = requests.get('http://www.simsimi.com/teach.htm')
-        self.teach_cookies = r.cookies
 
         self.headers = {
             'Referer': 'http://www.simsimi.com/talk.htm'
         }
 
         self.chat_url = 'http://www.simsimi.com/func/req?lc=ch&msg=%s'
-        self.teach_url = 'http://www.simsimi.com/func/teach'
+        self.api_url = 'http://api.simsimi.com/request.p?key=%s&lc=ch&ft=1.0&text=%s'
+
+        if not SIMSIMI_KEY:
+            self.initSimSimiCookie()
+
+    def initSimSimiCookie(self):
+        r = requests.get('http://www.simsimi.com/talk.htm')
+        self.chat_cookies = r.cookies
+
+    def getSimSimiResult(self, message, method='normal'):
+        if method == 'normal':
+            r = requests.get(self.chat_url % message, cookies=self.chat_cookies, headers=self.headers)
+            self.chat_cookies = r.cookies
+        else:
+            url = self.api_url % (SIMSIMI_KEY, message) 
+            r = requests.get(url)
+        return r
 
     def chat(self, message=''):
         if message:
-            r = requests.get(self.chat_url % message, cookies=self.chat_cookies, headers=self.headers)
-            self.chat_cookies = r.cookies
+            r = self.getSimSimiResult(message, 'normal' if not SIMSIMI_KEY else 'api')
             try:
-                return r.json()['response']
+                answer = r.json()['response']
+                sql = "INSERT INTO question_and_answers (question, answer, worker) VALUES(%s, %s, %s)"
+                try:
+                    cursor.execute(sql, (message, answer, workerhostname))
+                except Exception as e:
+                    print e
+                return answer
             except:
                 return u'呵呵'
         else:
             return u'叫我干嘛'
 
-    def teach(self, req, resp):
-        data = {
-            'req': req,
-            'resp': resp,
-            'lc': 'ch',
-            'snsinfo': '{"sid":"1432328384", "stype":"facebook", "sname":"王大鹏", "stoken":"AAAFRQIFUlkgBAPKP1DkWkDRuhGDpO2mZCbgq38t90ZC9U1VlstKQEH0OUt8sWUzdGBFWoGz4Wegbm0ZA4LyjaBQ6p0OIrZCg1nnp0JiiqPgjVWNwoGoh", "sshare":"off"}'
-        }
-        r = requests.post(self.teach_url, data, cookies=self.teach_cookies, headers=self.headers)
-        print r.text
-
-
 if __name__ == '__main__':
     simi = SimSimi()
     print simi.chat('最后一个问题')
-    #simi.teach('一切的答案', '42')
