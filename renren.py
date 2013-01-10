@@ -2,6 +2,14 @@
 
 """
 Copyright (c) 2012 wong2 <wonderfuly@gmail.com>
+Copyright (c) 2012 hupili <hpl1989@gmail.com>
+
+Original Author:
+    Wong2 <wonderfuly@gmail.com>
+Changes Statement:
+    Changes made by Pili Hu <hpl1989@gmail.com> on
+    Jan 10 2013:
+        Support captcha.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -35,6 +43,7 @@ from pyquery import PyQuery
 from ntype import NTYPES
 from encrypt import encryptString
 import sys
+import os
 
 
 class RenRen:
@@ -68,16 +77,27 @@ class RenRen:
 
     def login(self, email, pwd):
         key = self.getEncryptKey()
+
+        if self.getShowCaptcha(email) == 1:
+            fn = 'icode.%s.jpg' % os.getpid()
+            self.getICode(fn)
+            print "Please input the code in file '%s':" % fn
+            icode = raw_input().strip()
+            os.remove(fn)
+        else:
+            icode = ''
+
         data = {
             'email': email,
             'origURL': 'http://www.renren.com/home',
-            'icode': '',
+            'icode': icode,
             'domain': 'renren.com',
             'key_id': 1,
             'captcha_type': 'web_login',
             'password': encryptString(key['e'], key['n'], pwd) if key['isEncrypt'] else pwd,
             'rkey': key['rkey']
         }
+        print "login data: %s" % data
         url = 'http://www.renren.com/ajaxLogin/login?1=1&uniqueTimestamp=%f' % random.random()
         r = self.post(url, data)
         result = r.json()
@@ -88,6 +108,22 @@ class RenRen:
             self.getToken(r.text)
         else:
             print 'login error', r.text
+
+    def getICode(self, fn):
+        # What's wrong with the following?
+        #r = self.get('http://icode.renren.com/getcode.do', \
+        #        data = {'t':'web_login','rnd':random.random()})
+        r = self.get("http://icode.renren.com/getcode.do?t=web_login&rnd=%s" % random.random())
+        if r.status_code == 200 and r.raw.headers['content-type'] == 'image/jpeg':
+            with open(fn, 'wb') as f:
+                for chunk in r.iter_content():
+                    f.write(chunk)
+        else:
+            print "get icode failure"
+
+    def getShowCaptcha(self, email=None):
+        r = self.post('http://www.renren.com/ajax/ShowCaptcha', data={'email': email})
+        return r.json()
 
     def getEncryptKey(self):
         r = requests.get('http://login.renren.com/ajax/getEncryptKey')
@@ -132,7 +168,7 @@ class RenRen:
             result = json.loads(r.text, strict=False)
         except:
             print 'error'
-        return result 
+        return result
 
     def getDoings(self, uid, page=0):
         url = 'http://status.renren.com/GetSomeomeDoingList.do?userId=%s&curpage=%d' % (str(uid), page)
