@@ -27,6 +27,20 @@ import urllib2
 import urllib
 
 
+def test(data, bot=None):
+    return '是谁' in data['message'] or '是什么' in data['message']
+
+
+def handle(data, bot=None):
+    i = data['message'].find('是谁')
+    if i >= 0:
+        return wikipedia(data['message'][:i])
+    i = data['message'].find('是什么')
+    if i >= 0:
+        return wikipedia(data['message'][:i])
+    raise Exception
+
+
 def remove(s):
     ans = ''
     while True:
@@ -49,25 +63,24 @@ def remove(s):
         s = s[s.find(']')+1:]
 
 
-def wikipedia(message, word):
-    try:
-        title = message[:message.find(word)]
-        url = 'http://zh.wikipedia.org/w/index.php?%s' % urllib.urlencode({'title': title, 'printable': 'yes', 'variant': 'zh-cn'})
-        req = urllib2.Request(url, headers={'User-Agent': "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-US) AppleWebKit/533.3 (KHTML, like Gecko) Chrome/5.0.354.0 Safari/533.3"})
-        wp = urllib2.urlopen(req, timeout=10)
-        html = wp.read()
-        #防止404，实际上似乎py会直接在urlopen的时候发现404并抛异常
-        if html.find('维基百科目前还没有与上述标题相同的条目') >= 0:
-            raise Exception
-        i = html.find('mw-content-text')
-        if i < 0:
-            raise Exception
-        html = html[i:]
-        html = html[html.find('<p>')+3:html.find('</p>')]
-        return remove(html)
-    except:
-        return None
+def wikipedia(title):
+    url = 'http://zh.wikipedia.org/w/index.php?%s' % urllib.urlencode({'title': title, 'printable': 'yes', 'variant': 'zh-cn'})
+    req = urllib2.Request(url, headers={'User-Agent': "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-US) AppleWebKit/533.3 (KHTML, like Gecko) Chrome/5.0.354.0 Safari/533.3"})
+    wp = urllib2.urlopen(req, timeout=10)
+    html = wp.read()
+    #防止404，实际上似乎py会直接在urlopen的时候发现404并抛异常
+    if html.find('维基百科目前还没有与上述标题相同的条目') >= 0:
+        raise Exception
+    i = html.find('mw-content-text')
+    if i < 0:
+        raise Exception
+    html = html[i:]
+    html = html[html.find('<p>')+3:html.find('</p>')]
+    return remove(html)
 
 
 if __name__ == '__main__':
-    print wikipedia('节操是什么？', '是什么')
+    print handle({'message': '刘邦是谁'})
+    #print handle({'message': '杨肉是谁'})
+    print handle({'message': 'IBM是什么'})
+    print handle({'message': 'ibm是什么'})
