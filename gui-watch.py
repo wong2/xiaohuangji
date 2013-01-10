@@ -37,7 +37,7 @@ def update_stat(qlabel):
     while True:
         try:
             m = MySQLdb.connect(host=MYSQL_HOST, port=3306, user=MYSQL_USER, passwd=MYSQL_PASS,
-                    db=MYSQL_DBNAME, charset="utf8", use_unicode=False).cursor()
+                    db=MYSQL_DBNAME, charset="utf8", use_unicode=False, connect_timeout=5).cursor()
             m.execute("SELECT count(*) FROM `question_and_answers`")
             total = m.fetchone()[0]
             m.execute("SELECT MAX(`time`) FROM `question_and_answers`")
@@ -108,7 +108,7 @@ def update_realtime(qlabel):
     while True:
         try:
             m = MySQLdb.connect(host=MYSQL_HOST, port=3306, user=MYSQL_USER, passwd=MYSQL_PASS,
-                    db=MYSQL_DBNAME, charset="utf8", use_unicode=False).cursor()
+                    db=MYSQL_DBNAME, charset="utf8", use_unicode=False, connect_timeout=5).cursor()
             m.execute("SELECT * FROM question_and_answers ORDER BY `id` DESC LIMIT 0, 3")
             l = m.fetchall()
             s = u'<center>最近三条问答</center><br/>' + '<br/>'.join([
