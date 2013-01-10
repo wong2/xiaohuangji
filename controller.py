@@ -55,7 +55,7 @@ self_match_pattern = re.compile('<a.*@小黄鸡.*</a>')
 
 # 登录账号得到bot
 def getBots(accounts):
-    if 'main.py' in sys.argv[0]:
+    if True or 'main.py' in sys.argv[0]:
         bots = []
         for account in accounts:
             bot = RenRen()
@@ -132,7 +132,9 @@ def reply(data):
 
     print 'handling comment', data, '\n'
 
-    data['message'] = answerfilter(magic(questionfilter(message)))
+    data['message'] = questionfilter(message)
+    answer = magic(data, bot)
+    data['message'] = answerfilter(answer)
 
     result = bot.addComment(data)
 
