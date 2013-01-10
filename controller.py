@@ -55,7 +55,7 @@ self_match_pattern = re.compile('<a.*@小黄鸡.*</a>')
 
 # 登录账号得到bot
 def getBots(accounts):
-    if True or 'main.py' in sys.argv[0]:
+    if 'main.py' in sys.argv[0]:
         bots = []
         for account in accounts:
             bot = RenRen()
