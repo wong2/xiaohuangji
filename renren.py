@@ -35,6 +35,7 @@ from pyquery import PyQuery
 from ntype import NTYPES
 from encrypt import encryptString
 import sys
+import os
 
 
 class RenRen:
@@ -70,9 +71,11 @@ class RenRen:
         key = self.getEncryptKey()
 
         if self.getShowCaptcha(email) == 1:
-            self.getICode()
-            print "Please input the code in file 'icode.jpg':"
+            fn = 'icode.%s.jpg' % os.getpid()
+            self.getICode(fn)
+            print "Please input the code in file '%s':" % fn
             icode = raw_input().strip()
+            os.remove(fn)
         else:
             icode = ''
 
@@ -98,13 +101,13 @@ class RenRen:
         else:
             print 'login error', r.text
 
-    def getICode(self):
+    def getICode(self, fn):
         # What's wrong with the following?
         #r = self.get('http://icode.renren.com/getcode.do', \
         #        data = {'t':'web_login','rnd':random.random()})
         r = self.get("http://icode.renren.com/getcode.do?t=web_login&rnd=%s" % random.random())
         if r.status_code == 200 and r.raw.headers['content-type'] == 'image/jpeg':
-            with open('icode.jpg', 'wb') as f:
+            with open(fn, 'wb') as f:
                 for chunk in r.iter_content():
                     f.write(chunk)
         else:
@@ -157,7 +160,7 @@ class RenRen:
             result = json.loads(r.text, strict=False)
         except:
             print 'error'
-        return result 
+        return result
 
     def getDoings(self, uid, page=0):
         url = 'http://status.renren.com/GetSomeomeDoingList.do?userId=%s&curpage=%d' % (str(uid), page)
