@@ -52,9 +52,9 @@ def handle(data, bot):
             cityFlag = True
             break
     if not cityFlag:
-        reply = '亲爱的' + data['author_id'] + '，您想知道哪个城市的天气啊！！！'
+        reply = '不会自己去看天气预报啊！'
     if 0 == reply:
-        return '亲爱的' + data['author_id'] + '，服务器连接失败， 啊啊啊啊啊啊！！！'
+        return '不会自己去看天气预报啊！'
     else:
         return reply
 
