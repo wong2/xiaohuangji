@@ -39,30 +39,29 @@ def weather(cityid):
     count = 0  # 尝试进行三次数据获取
     while flag and count < 3:
         try:
-            r = requests.get('http://www.weather.com.cn/data/cityinfo/' + cityid + '.html')
-            weatherinfo = json.loads(r.text)[u'weatherinfo']
+            weatherinfo = requests.get('http://www.weather.com.cn/data/cityinfo/' + cityid + '.html').json()['weatherinfo']
             flag = 0
         except:
             count += 1
     try:
-        return (weatherinfo[u'city'] + u', ' + weatherinfo[u'weather'] + u', ' + weatherinfo[u'temp1'] + u' ~ ' + weatherinfo[u'temp2']).encode('utf8')
+        return (weatherinfo['city'] + ', ' + weatherinfo['weather'] + ', ' + weatherinfo['temp1'] + ' ~ ' + weatherinfo['temp2']).encode('utf8')
     except:
         return 0
 
 
 def handle(data, bot):
     # 加载城市名称和城市id
-    cityidDict = pickle.load(file('./cityid', 'r'))
+    cityidDict = pickle.load(file('./data/cityid', 'r'))
     cityFlag = False
-    for city in cityidDict.keys():
+    for city in cityidDict:
         if city.encode('utf8') in data['message']:
             reply = weather(cityidDict[city])
             cityFlag = True
             break
     if not cityFlag:
-        reply = '亲爱的'+data['author_id']+'，您想知道哪个城市的天气啊！！！'
+        reply = '亲爱的' + data['author_id'] + '，您想知道哪个城市的天气啊！！！'
     if 0 == reply:
-        return '亲爱的'+data['author_id']+'，服务器连接失败， 啊啊啊啊啊啊！！！'
+        return '亲爱的' + data['author_id'] + '，服务器连接失败， 啊啊啊啊啊啊！！！'
     else:
         return reply
 
