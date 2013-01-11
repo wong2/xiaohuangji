@@ -1,1 +1,1 @@
-__all__ = ['visit', 'simsimi']
+__all__ = ['visit', 'earthquake', 'simsimi']
