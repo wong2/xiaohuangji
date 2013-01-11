@@ -89,14 +89,14 @@ def getNotiData(bot, data):
     ntype = data['ntype']
 
     content = ''
-    if ntype == NTYPES['at_in_status']:
+    # 只有在状态里面@才走这步
+    if ntype == NTYPES['at_in_status'] and ( (not data['reply_id']) or data['reply_id'] == data['doing_id'] ):
         doing = bot.getDoingById(owner_id, doing_id)
         if doing:
             content = self_match_pattern.sub('', doing['content'].encode('utf-8'))
         else:
             return None, None
-
-    elif ntype == NTYPES['reply_in_status_comment']:
+    else:
         reply_id = data['reply_id']
         comment = bot.getCommentById(owner_id, doing_id, reply_id)
         if comment:
