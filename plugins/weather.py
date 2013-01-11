@@ -35,14 +35,7 @@ def test(data, bot):
 
 
 def weather(cityid):
-    flag = 1
-    count = 0  # 尝试进行三次数据获取
-    while flag and count < 3:
-        try:
-            weatherinfo = requests.get('http://www.weather.com.cn/data/cityinfo/' + cityid + '.html').json()['weatherinfo']
-            flag = 0
-        except:
-            count += 1
+    weatherinfo = requests.get('http://www.weather.com.cn/data/cityinfo/' + cityid + '.html').json()['weatherinfo']
     try:
         return (weatherinfo['city'] + ', ' + weatherinfo['weather'] + ', ' + weatherinfo['temp1'] + ' ~ ' + weatherinfo['temp2']).encode('utf8')
     except:
