@@ -34,13 +34,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # 小黄鸡们
 
-from renren import RenRen
 from ai import magic
 from ntype import NTYPES
 from filter_manager import questionfilter, answerfilter
 import re
 import sys
 import redis
+
+try:
+    from renren_pro import RenRen
+except:
+    from renren import RenRen
 try:
     from my_accounts import accounts
 except:
