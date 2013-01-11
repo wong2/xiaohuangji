@@ -31,7 +31,7 @@ def test(data, bot):
     return '求来访' in data['message']
 
 def handle(data, bot):
-    bot.visit(data.get('author_id', 'owner_id'))
+    bot.visit(data.get('author_id', data['owner_id']))
     return random.choice(['我来也', '马上就到', '来啦', '在路上了'])
 
 if __name__ == '__main__':
