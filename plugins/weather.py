@@ -26,7 +26,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # 天气
 import requests
-import json
 import cPickle as pickle
 
 
@@ -51,12 +50,8 @@ def handle(data, bot):
             reply = weather(cityidDict[city])
             cityFlag = True
             break
-    if not cityFlag:
-        reply = '不会自己去看天气预报啊！'
-    if 0 == reply:
-        return '不会自己去看天气预报啊！'
-    else:
-        return reply
+    return reply if cityFlag and reply else '不会自己去看天气预报啊'
+
 
 if __name__ == '__main__':
     print test({'message': '天气怎么样'}, None)
