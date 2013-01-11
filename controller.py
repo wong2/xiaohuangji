@@ -94,7 +94,7 @@ def getNotiData(bot, data):
 
     content = ''
     # 只有在状态里面@才走这步
-    if ntype == NTYPES['at_in_status'] and ( (not data['reply_id']) or data['reply_id'] == data['doing_id'] ):
+    if ntype == NTYPES['at_in_status'] and ( (not data['reply_id']) or data['reply_id'] == int(data['owner_id']) ):
         doing = bot.getDoingById(owner_id, doing_id)
         if doing:
             content = self_match_pattern.sub('', doing['content'].encode('utf-8'))
