@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 __all__ = [
     'visit',
-    'wikipedia'
+    'wikipedia',
     'earthquake',
     'airpollution',
     'weather',
