@@ -32,6 +32,31 @@ import os
 import glob
 import sys
 
+
 TEST_DIR = os.path.abspath(os.path.dirname(__file__))
 MAIN_CODE_DIR = os.path.abspath(os.path.join(TEST_DIR, os.path.pardir))
-PLUGINS_CODE_DIR = os.path.abspath(os.path.join(MAIN_CODE_DIR, 'plugins'))
+PLUGINS_CODE_DIR = os.path.abspath(os.path.join(MAIN_CODE_DIR, "plugins"))
+
+# Result refers to result returned by plugin
+WRONG_KEY_WORD_ERROR = "Missing or wrong keyword should not have result."
+WRONG_RESULT_ERROR = "Correct keyword should have result."
+WRONG_RESULT_FORMAT_ERROR = "Result should have correct format."
+
+
+class TestBase(object):
+
+    @classmethod
+    def clean_up(klass, path, wildcard):
+        os.chdir(path)
+        for rm_file in glob.glob(wildcard):
+            os.unlink(rm_file)
+
+    @classmethod
+    def setup_class(klass):
+        sys.stderr.write("\nRunning %s\n" % klass)
+
+    @classmethod
+    def teardown_class(klass):
+        klass.clean_up(TEST_DIR, "*.py?")
+        klass.clean_up(PLUGINS_CODE_DIR, "*.py?")
+        klass.clean_up(MAIN_CODE_DIR, "*.py?")
