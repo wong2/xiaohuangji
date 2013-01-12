@@ -3,7 +3,7 @@ __all__ = [
 'visit',
 'earthquake',
 'airpollution',
-'weather'
+'weather',
 'simsimi',
 ]
 # 一行放一个，避免merge冲突
