@@ -23,23 +23,20 @@ the following conditions:
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+# 维基百科
+
 import urllib2
 import urllib
-
+import re
 
 def test(data, bot=None):
-    return '是谁' in data['message'] or '是什么' in data['message']
-
+    return data['message'].startswith('什么是')
 
 def handle(data, bot=None):
-    i = data['message'].find('是谁')
-    if i >= 0:
-        return wikipedia(data['message'][:i])
-    i = data['message'].find('是什么')
-    if i >= 0:
-        return wikipedia(data['message'][:i])
+    m = re.search('(?<=什么是)(.+?)(?=啊|那|呢|哈|！|。|？|\?|\s|\Z)', data['message'])
+    if m and m.groups():
+        return wikipedia(m.groups()[0])
     raise Exception
-
 
 def remove(s):
     ans = ''
@@ -80,7 +77,5 @@ def wikipedia(title):
 
 
 if __name__ == '__main__':
-    print handle({'message': '刘邦是谁'})
-    #print handle({'message': '杨肉是谁'})
-    print handle({'message': 'IBM是什么'})
-    print handle({'message': 'ibm是什么'})
+    print handle({'message': '什么是SVM????'})
+    print handle({'message': '什么是自动售货机啊。'})
