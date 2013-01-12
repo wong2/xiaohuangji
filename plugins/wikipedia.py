@@ -30,7 +30,7 @@ import urllib
 import re
 
 def test(data, bot=None):
-    return data['message'].startswith('什么是')
+    return '什么是' in data['message']
 
 def handle(data, bot=None):
     m = re.search('(?<=什么是)(.+?)(?=啊|那|呢|哈|！|。|？|\?|\s|\Z)', data['message'])
@@ -77,5 +77,6 @@ def wikipedia(title):
 
 
 if __name__ == '__main__':
-    print handle({'message': '什么是SVM????'})
-    print handle({'message': '什么是自动售货机啊。'})
+    for data in [ {'message': '什么是SVM  ????'}, {'message': '什么是薛定谔方程啊'} ]:
+        if test(data):
+            print handle(data)
