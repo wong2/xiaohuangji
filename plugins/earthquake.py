@@ -32,8 +32,7 @@ import re
 
 
 def test(data, bot):
-    return reduce(lambda a, b: a or b, [i in data['message'] for i in
-        ['地震了吗', '地震了么', '地震了?', '地震了？', '地震了吧']])
+    return '地震了' in data['message']
 
 
 def jw(a, b):
