@@ -26,13 +26,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # 天气
 import os
-import sys
 import requests
 import cPickle as pickle
 
 
 def city(data):
-    cityidDict = pickle.load(file(os.path.split(sys.argv[0])[0]+os.path.sep+'data'+os.path.sep+'cityid', 'r'))
+    cityidDict = pickle.load(file(os.path.join(os.path.dirname(__file__), 'data' + os.path.sep + 'cityid'), 'r'))
     for city in cityidDict:
         if city.encode('utf8') in data['message']:
             return True
@@ -52,7 +51,7 @@ def weather(cityid):
 
 
 def handle(data, bot):
-    cityidDict = pickle.load(file('./data/cityid', 'r'))
+    cityidDict = pickle.load(file(os.path.join(os.path.dirname(__file__), 'data' + os.path.sep + 'cityid'), 'r'))
     for city in cityidDict:
         if city.encode('utf8') in data['message']:
             reply = weather(cityidDict[city])
