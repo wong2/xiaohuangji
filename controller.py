@@ -115,7 +115,7 @@ def getNotiData(bot, data):
                 content_s = content.split(': ', 1)
             if len(content_s) == 1:
                 content_s = content.split(':', 1)
-            content = content_s[-1]
+            content = content_s[-1].encode('utf-8')
             print content
         else:
             return None, None
