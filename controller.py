@@ -143,5 +143,11 @@ def reply(data):
 
     result = bot.addComment(data)
 
-    if result['code'] != 0:
+    code = result['code']
+    if code == 0:
+        return
+
+    if code == 10:
+        print 'some words are blocked'
+    else:
         raise Exception('Error sending comment by bot %s' % bot.email)
