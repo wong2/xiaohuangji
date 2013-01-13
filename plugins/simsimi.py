@@ -58,9 +58,7 @@ class SimSimi:
 
     def __init__(self):
 
-        self.headers = {
-            'Referer': 'http://www.simsimi.com/talk.htm'
-        }
+        self.session = requests.Session()
 
         self.chat_url = 'http://www.simsimi.com/func/req?lc=ch&msg=%s'
         self.api_url = 'http://api.simsimi.com/request.p?key=%s&lc=ch&ft=1.0&text=%s'
@@ -69,15 +67,17 @@ class SimSimi:
             self.initSimSimiCookie()
 
     def initSimSimiCookie(self):
-        r = requests.get('http://www.simsimi.com/talk.htm')
-        self.chat_cookies = r.cookies
+        self.session.headers.update({'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:18.0) Gecko/20100101 Firefox/18.0'})
+        self.session.get('http://www.simsimi.com/talk.htm')
+        self.session.headers.update({'Referer': 'http://www.simsimi.com/talk.htm'})
+        self.session.get('http://www.simsimi.com/talk.htm?lc=ch')
+        self.session.headers.update({'Referer': 'http://www.simsimi.com/talk.htm?lc=ch'})
 
     def getSimSimiResult(self, message, method='normal'):
         if method == 'normal':
-            r = requests.get(self.chat_url % message, cookies=self.chat_cookies, headers=self.headers)
-            self.chat_cookies = r.cookies
+            r = self.session.get(self.chat_url % message)
         else:
-            url = self.api_url % (SIMSIMI_KEY, message) 
+            url = self.api_url % (SIMSIMI_KEY, message)
             r = requests.get(url)
         return r
 
@@ -100,11 +100,15 @@ class SimSimi:
 
 simsimi = SimSimi()
 
+
 def test(data, bot):
     return True
+
 
 def handle(data, bot):
     return simsimi.chat(data['message'])
 
 if __name__ == '__main__':
     print handle({'message': '最后一个问题'}, None)
+    print handle({'message': '还有一个问题'}, None)
+    print handle({'message': '其实我有三个问题'}, None)
