@@ -2,7 +2,7 @@
 #-*-coding:utf-8-*-
 
 """
-Copyright (c) 2012 Pili Hu <hpl1989@gmail.com>
+Copyright (c) 2013 Pili Hu <hpl1989@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -107,33 +107,6 @@ def cal(exp):
         #    error for further investigation
         return '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭'
 
-
-def _ut_test(exp):
-    print test({'message': exp}, None), "\t", 'test("%s")' % exp
-
-
-def _ut_handle(exp):
-    print handle({'message': exp}, None), "\t", 'handle("%s")' % exp
-
 if __name__ == '__main__':
-    _ut_test('hello')
-    _ut_test('2 * 4+ 5/3 = ?')
-    _ut_test('x *4+ 5/3 =?')
-    _ut_test('2 * 4+ 5/3= ？')
-    _ut_test('2 * 4+ 5/3 是多少')
-    _ut_test('2 * 4+ 5/3 是几')
-    _ut_test('sys.exit(-1)')
-    _ut_test('sys.exit(-1) = ?')
-    _ut_handle('2 * 4+ 5/3 = ?')
-    _ut_handle('x *4+ 5/3 =?')
-    _ut_handle('2 * 4+ 5/3= ？')
-    _ut_handle('2 * 4+ 5/3 是多少')
-    _ut_handle('2 * (4+ 5)/3 是几')
-    _ut_handle('2 * 4+ 5/(3.0) 是几')
-    _ut_handle('2 * 4+ 5/0 是几')
-    _ut_handle('sys.exit(-1) = ?')
-    _ut_handle('1' + ('+1' * (AI_ARITHMETIC_MAX_LEN_EXP / 2 - 1)) + '=?')
-    _ut_handle('1' + ('+1' * (AI_ARITHMETIC_MAX_LEN_EXP / 2)) + '=?')
-    _ut_handle(('1' * (AI_ARITHMETIC_MAX_LEN_REPLY)) + '=?')
-    _ut_handle(('1' * (AI_ARITHMETIC_MAX_LEN_REPLY + 1)) + '=?')
-    _ut_handle('2**' + ('9' * (AI_ARITHMETIC_MAX_LEN_EXP - 3)) + '=?')  # Test time consumption
+    print "Unit tests are now moved to 'test_arithmetic.py'"
+    pass
