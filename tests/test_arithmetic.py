@@ -78,16 +78,17 @@ class TestArithmetic(TestBase):
         _ut_handle('x *4+ 5/3 =?', '(´･д･`) 这明显有问题嘛！！你确定没写错？')
         # Zero division error
         _ut_handle('2 * 4+ 5/0 是几', '你好笨啊！除零了。跟小鸡学下四则运算吧 （＃￣▽￣＃）')
-        # Long input expression 
-        _ut_handle('1' + ('+1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP / 2 - 1)) + '=?',\
-                '不就是%d嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP / 2))
+        # Long input expression
+        _ut_handle('1' + ('+1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP / 2 - 1)) + '=?',
+                   '不就是%d嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP / 2))
         _ut_handle('1' + ('+1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP / 2)) + '=?', '太长了……小鸡才不算呢。╮(︶︿︶)╭')
-        _ut_handle(('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY)) + '=?', \
-                '不就是%s嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % ('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY)))
+        _ut_handle(('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY)) + '=?',
+                   '不就是%s嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % ('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY)))
         _ut_handle(('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY + 1)) + '=?', '这个数字太大了！鸡才懒得回你呢╮(︶︿︶)╭')
 
     def test_arithmetic_handle_timeout(self):
         _ut_handle('2**' + ('9' * (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP - 3)) + '=?', '太难了，计算鸡半天都算不出来 ╮(︶︿︶)╭')
+
 
 def _ut_test(exp, ret):
     eq_(ret, arithmetic.test({'message': exp}, None), WRONG_RESULT_ERROR)
@@ -95,4 +96,3 @@ def _ut_test(exp, ret):
 
 def _ut_handle(exp, ret):
     eq_(ret, arithmetic.handle({'message': exp}, None), WRONG_RESULT_ERROR)
-
