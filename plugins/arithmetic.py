@@ -35,6 +35,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #       http://zh.wikipedia.org/wiki/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7
 
 import re
+from timeout import timeout, TimeoutException
 
 try:
     from settings import AI_ARITHMETIC_REGEX_TEST
@@ -56,6 +57,11 @@ try:
 except:
     AI_ARITHMETIC_MAX_LEN_REPLY = 50
 
+try:
+    from settings import AI_ARITHMETIC_EVAL_TIMEOUT
+except:
+    AI_ARITHMETIC_EVAL_TIMEOUT = 1.0  # Second
+
 REGEX_TEST = re.compile(AI_ARITHMETIC_REGEX_TEST)
 REGEX_HANDLE = re.compile(AI_ARITHMETIC_REGEX_HANDLE)
 
@@ -72,8 +78,16 @@ def handle(data, bot):
         # tested by AI_ARITHMETIC_REGEX_TEST so we should be able to
         # read group()[0]. This is just to prevent your customized
         # regex from causing errors.
-        return '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭'
+        return '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭ （怎么会这样？）'
 
+    try:
+        return cal(exp)
+    except TimeoutException:
+        return '太难了，计算鸡半天都算不出来 ╮(︶︿︶)╭'
+
+
+@timeout(AI_ARITHMETIC_EVAL_TIMEOUT)
+def cal(exp):
     if len(exp) > AI_ARITHMETIC_MAX_LEN_EXP:
         return '太长了……小鸡才不算呢。╮(︶︿︶)╭'
 
@@ -122,4 +136,4 @@ if __name__ == '__main__':
     _ut_handle('1' + ('+1' * (AI_ARITHMETIC_MAX_LEN_EXP / 2)) + '=?')
     _ut_handle(('1' * (AI_ARITHMETIC_MAX_LEN_REPLY)) + '=?')
     _ut_handle(('1' * (AI_ARITHMETIC_MAX_LEN_REPLY + 1)) + '=?')
-    _ut_handle('2**' + ('9' * (AI_ARITHMETIC_MAX_LEN_EXP - 3)) + '=?') # Test time consumption
+    _ut_handle('2**' + ('9' * (AI_ARITHMETIC_MAX_LEN_EXP - 3)) + '=?')  # Test time consumption
