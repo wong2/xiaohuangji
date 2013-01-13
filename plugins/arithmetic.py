@@ -41,7 +41,7 @@ from sympy.parsing import sympy_parser
 try:
     from settings import AI_ARITHMETIC_REGEX_TEST
 except:
-    AI_ARITHMETIC_REGEX_TEST = '([ \(\.\)0-9+\-*/]+)((\s*=\s*(\?|？))|(\s*(是多少|是几|等于几|等于多少)))'
+    AI_ARITHMETIC_REGEX_TEST = '([ \(\.\)0-9a-zA-Z,+\-*/]+)((\s*=\s*(\?|？))|(\s*(是多少|是几|等于几|等于多少)))'
 
 try:
     from settings import AI_ARITHMETIC_REGEX_HANDLE
@@ -94,6 +94,7 @@ def cal(exp):
 
     try:
         #ans = str(eval(exp))
+        print exp
         ans = str(sympy_parser.parse_expr(exp))
 
         if len(ans) > AI_ARITHMETIC_MAX_LEN_REPLY:
@@ -108,6 +109,7 @@ def cal(exp):
         #TODO:
         #    Any logging convention in this project? We should log the
         #    error for further investigation
+        #raise e
         return '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭'
 
 if __name__ == '__main__':

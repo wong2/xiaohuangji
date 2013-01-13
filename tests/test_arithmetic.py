@@ -63,19 +63,29 @@ class TestArithmetic(TestBase):
         _ut_test('2 * 4+ 5/3 等于几', True)
         _ut_test('sys.exit(-1)', False)
         _ut_test('sys.exit(-1) = ?', True)
+        _ut_test('sin(pi/2)=?', True)
 
-    def test_arithmetic_handle_normal(self):
+    def test_arithmetic_handle_normal_basic(self):
         _ut_handle('2 * 4+ 5/3 = ?', '不就是29/3嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         _ut_handle('2 * 4+ 5/3= ？', '不就是29/3嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         _ut_handle('2 * 4+ 5/3 是多少', '不就是29/3嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         _ut_handle('2 * (4+ 5)/3 是几', '不就是6嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         _ut_handle('2 * 4+ 5/(3.0) 是几', '不就是9.66666666666667嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         # The matched part is "(-1)" not "sys.exit(-1)"
-        _ut_handle('sys.exit(-1) = ?', '不就是-1嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+        _ut_handle('sys.exit(-1) = ?', '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭')
+
+    def test_arithmetic_handle_normal_advanced(self):
+        _ut_handle('sin(pi/2)=?', '不就是1嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+        _ut_handle('atan(1)=?', '不就是pi/4嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+        _ut_handle('integrate(x * e ** (-x), x)=?', '不就是-e**(-x)*x/log(e) - e**(-x)/log(e)**2嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
 
     def test_arithmetic_handle_exception(self):
         # Syntax error
-        _ut_handle('x *4+ 5/3 =?', '(´･д･`) 这明显有问题嘛！！你确定没写错？')
+        _ut_handle(' *4+ 5/3 =?', '(´･д･`) 这明显有问题嘛！！你确定没写错？')
+        # The following is originally Syntax error.
+        # After allowing letters in expression, it is no longer syntax error.
+        # Also, sympy will retain x as a symbol.
+        _ut_handle('x *4+ 5/3 =?', '不就是4*x + 5/3嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         # Zero division: error in Python eval; infinity in sympy
         #_ut_handle('2 * 4+ 5/0 是几', '你好笨啊！除零了。跟小鸡学下四则运算吧 （＃￣▽￣＃）')
         _ut_handle('2 * 4+ 5/0 是几', '不就是oo嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
@@ -86,6 +96,12 @@ class TestArithmetic(TestBase):
         _ut_handle(('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY)) + '=?',
                    '不就是%s嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % ('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY)))
         _ut_handle(('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY + 1)) + '=?', '这个数字太大了！鸡才懒得回你呢╮(︶︿︶)╭')
+
+    def test_arithmetic_handle_false_flow(self):
+        # The following text will not get True from test(). It will not
+        # reach handle(). Verify whether we handle it correctly if this
+        # happens due to incorrect configuration.
+        _ut_handle('sys.exit(-1)', '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭ （怎么会这样？）')
 
     def test_arithmetic_handle_timeout(self):
         _ut_handle('2**' + ('9' * (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP - 3)) + '=?', '太难了，计算鸡半天都算不出来 ╮(︶︿︶)╭')
