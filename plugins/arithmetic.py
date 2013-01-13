@@ -32,6 +32,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import re
 from timeout import timeout, TimeoutException
 from sympy.parsing import sympy_parser
+from sympy.parsing.sympy_tokenize import TokenError
 
 try:
     from settings import AI_ARITHMETIC_REGEX_TEST
@@ -104,6 +105,8 @@ def cal(exp):
     except ZeroDivisionError:
         return '你好笨啊！除零了。跟小鸡学下四则运算吧 （＃￣▽￣＃）'
     except SyntaxError:
+        return '(´･д･`) 这明显有问题嘛！！你确定没写错？'
+    except TokenError:
         return '(´･д･`) 这明显有问题嘛！！你确定没写错？'
     except Exception, e:
         #TODO:
