@@ -34,13 +34,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # 小黄鸡们
 
-from renren import RenRen
 from ai import magic
 from ntype import NTYPES
 from filter_manager import questionfilter, answerfilter
 import re
 import sys
 import redis
+
+try:
+    from renren_pro import RenRen
+except:
+    from renren import RenRen
 try:
     from my_accounts import accounts
 except:
@@ -65,14 +69,15 @@ def getBots(accounts):
         return bots
     else:
         r = redis.Redis(REDIS_HOST)
+        cookies = r.get('xiaohuangji_cookies')
         bot = RenRen()
-        bot._loginByCookie(r.get('xiaohuangji_cookies'))
-        bot.email = ''
-        if bot.token:
-            return [bot]
+        if cookies:
+            bot._loginByCookie(cookies)
+            bot.email = ''
         else:
-            return []
-
+            account = accounts[0]
+            bot.login(account[0], account[1])
+        return [bot] if bot.token else []
 
 bots = getBots(accounts)
 
@@ -88,14 +93,14 @@ def getNotiData(bot, data):
     ntype = data['ntype']
 
     content = ''
-    if ntype == NTYPES['at_in_status']:
+    # 只有在状态里面@才走这步
+    if ntype == NTYPES['at_in_status'] and ( (not data['reply_id']) or data['reply_id'] == int(data['owner_id']) ):
         doing = bot.getDoingById(owner_id, doing_id)
         if doing:
             content = self_match_pattern.sub('', doing['content'].encode('utf-8'))
         else:
             return None, None
-
-    elif ntype == NTYPES['reply_in_status_comment']:
+    else:
         reply_id = data['reply_id']
         comment = bot.getCommentById(owner_id, doing_id, reply_id)
         if comment:
@@ -110,7 +115,7 @@ def getNotiData(bot, data):
                 content_s = content.split(': ', 1)
             if len(content_s) == 1:
                 content_s = content.split(':', 1)
-            content = content_s[-1]
+            content = content_s[-1].encode('utf-8')
             print content
         else:
             return None, None
@@ -132,9 +137,17 @@ def reply(data):
 
     print 'handling comment', data, '\n'
 
-    data['message'] = answerfilter(magic(questionfilter(message)))
+    data['message'] = questionfilter(message)
+    answer = magic(data, bot)
+    data['message'] = answerfilter(answer)
 
     result = bot.addComment(data)
 
-    if result['code'] != 0:
+    code = result['code']
+    if code == 0:
+        return
+
+    if code == 10:
+        print 'some words are blocked'
+    else:
         raise Exception('Error sending comment by bot %s' % bot.email)

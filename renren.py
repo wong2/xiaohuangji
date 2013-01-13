@@ -110,9 +110,6 @@ class RenRen:
             print 'login error', r.text
 
     def getICode(self, fn):
-        # What's wrong with the following?
-        #r = self.get('http://icode.renren.com/getcode.do', \
-        #        data = {'t':'web_login','rnd':random.random()})
         r = self.get("http://icode.renren.com/getcode.do?t=web_login&rnd=%s" % random.random())
         if r.status_code == 200 and r.raw.headers['content-type'] == 'image/jpeg':
             with open(fn, 'wb') as f:
@@ -232,8 +229,6 @@ class RenRen:
 if __name__ == '__main__':
     renren = RenRen()
     renren.login('email', 'password')
-    #renren.loginByCookie('cookie.txt')
     info = renren.getUserInfo()
     print 'hello', info['hostname']
-    #print renren.getNotifications()
     renren.visit(328748051)

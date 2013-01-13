@@ -26,22 +26,32 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # 从simsimi读数据
 
+import sys
+sys.path.append('..')
+
 import requests
 import cookielib
-import MySQLdb
 import socket
-from settings import MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DBNAME
+
+try:
+    import MySQLdb
+    from settings import MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DBNAME
+    use_mysql = True
+except:
+    use_mysql = False
+
 try:
     from settings import SIMSIMI_KEY
 except:
     SIMSIMI_KEY = ''
 
-mysqldb = MySQLdb.connect(host=MYSQL_HOST, port=3306, user=MYSQL_USER, passwd=MYSQL_PASS, db=MYSQL_DBNAME, charset='utf8', use_unicode=False)
-cursor = mysqldb.cursor()
-try:
-    workerhostname = socket.gethostname()
-except:
-    workerhostname = 'unknown'
+if use_mysql:
+    mysqldb = MySQLdb.connect(host=MYSQL_HOST, port=3306, user=MYSQL_USER, passwd=MYSQL_PASS, db=MYSQL_DBNAME, charset='utf8', use_unicode=False)
+    cursor = mysqldb.cursor()
+    try:
+        workerhostname = socket.gethostname()
+    except:
+        workerhostname = 'unknown'
 
 
 class SimSimi:
@@ -76,17 +86,25 @@ class SimSimi:
             r = self.getSimSimiResult(message, 'normal' if not SIMSIMI_KEY else 'api')
             try:
                 answer = r.json()['response']
-                sql = "INSERT INTO question_and_answers (question, answer, worker) VALUES(%s, %s, %s)"
-                try:
-                    cursor.execute(sql, (message, answer, workerhostname))
-                except Exception as e:
-                    print e
-                return answer
+                if use_mysql:
+                    sql = "INSERT INTO question_and_answers (question, answer, worker) VALUES(%s, %s, %s)"
+                    try:
+                        cursor.execute(sql, (message, answer, workerhostname))
+                    except Exception as e:
+                        print e
+                return answer.encode('utf-8')
             except:
-                return u'呵呵'
+                return '呵呵'
         else:
-            return u'叫我干嘛'
+            return '叫我干嘛'
+
+simsimi = SimSimi()
+
+def test(data, bot):
+    return True
+
+def handle(data, bot):
+    return simsimi.chat(data['message'])
 
 if __name__ == '__main__':
-    simi = SimSimi()
-    print simi.chat('最后一个问题')
+    print handle({'message': '最后一个问题'}, None)

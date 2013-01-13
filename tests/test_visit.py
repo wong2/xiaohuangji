@@ -1,7 +1,7 @@
-#-*-coding:utf-8-*-
+# -*- coding: utf-8 -*-
 
 """
-Copyright (c) 2012 wong2 <wonderfuly@gmail.com>
+Copyright (c) 2013 wgx731 <wgx731@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -23,27 +23,37 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+""" Visit plugin test
 
-# 小黄鸡的ai，先自己尝试处理，没结果则交给simsimi
+    Test Cases for xiaohuangji visit plugin
+"""
 
-import pkgutil
-import plugins
+__author__ = 'wgx731'
+__copyright__ = 'Copyright (c) 2013 wgx731'
+__license__ = 'MIT'
+__version__ = '0.1'
+__maintainer__ = 'wgx731'
+__email__ = 'wgx731@gmail.com'
+__status__ = 'development'
 
-plugin_modules = []
-for plugin_name in plugins.__all__:
-    __import__('plugins.%s' % plugin_name)
-    plugin_modules.append(getattr(plugins, plugin_name))
+from nose.tools import ok_
+from nose.tools import eq_
+from test_config import *
+from ..plugins import visit
 
-# some magic here
-def magic(data, bot=None):
-    for plugin_module in plugin_modules:
-        try:
-            if plugin_module.test(data, bot):
-                return plugin_module.handle(data, bot)
-        except:
-            continue
+sys.path = [TEST_DIR] + sys.path
 
-    return '呵呵'
 
-if __name__ == '__main__':
-    print magic({'message': '今天天气怎么样?'})
+class TestVisit(TestBase):
+
+    def setup(self):
+        pass
+
+    def teardown(self):
+        pass
+
+    def test_visit_test_1(self):
+        eq_(False, visit.test({'message': '别来访'}, None), WRONG_KEY_WORD_ERROR)
+
+    def test_visit_test_2(self):
+        eq_(True, visit.test({'message': '求来访'}, None), WRONG_RESULT_ERROR)

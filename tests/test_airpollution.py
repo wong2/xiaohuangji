@@ -1,7 +1,7 @@
-#-*-coding:utf-8-*-
+# -*- coding: utf-8 -*-
 
 """
-Copyright (c) 2012 wong2 <wonderfuly@gmail.com>
+Copyright (c) 2013 wgx731 <wgx731@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -23,27 +23,36 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+""" Airpollution plugin test
 
-# 小黄鸡的ai，先自己尝试处理，没结果则交给simsimi
+    Test Cases for xiaohuangji airpollution plugin
+"""
 
-import pkgutil
-import plugins
+__author__ = 'wgx731'
+__copyright__ = 'Copyright (c) 2013 wgx731'
+__license__ = 'MIT'
+__version__ = '0.1'
+__maintainer__ = 'wgx731'
+__email__ = 'wgx731@gmail.com'
+__status__ = 'development'
 
-plugin_modules = []
-for plugin_name in plugins.__all__:
-    __import__('plugins.%s' % plugin_name)
-    plugin_modules.append(getattr(plugins, plugin_name))
+from nose.tools import ok_
+from nose.tools import eq_
+from test_config import *
+from ..plugins import airpollution
 
-# some magic here
-def magic(data, bot=None):
-    for plugin_module in plugin_modules:
-        try:
-            if plugin_module.test(data, bot):
-                return plugin_module.handle(data, bot)
-        except:
-            continue
+sys.path = [TEST_DIR] + sys.path
 
-    return '呵呵'
 
-if __name__ == '__main__':
-    print magic({'message': '今天天气怎么样?'})
+class TestAirPollution(TestBase):
+
+    def setup(self):
+        pass
+
+    def teardown(self):
+        pass
+
+    #TODO: Add unit test for airpollution plugin
+    def test_airpollution_test_1(self):
+        eq_(False, airpollution.test({'message': 'wrong key'}, None), WRONG_KEY_WORD_ERROR)
+

@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 
 """
-Copyright (c) 2012 wong2 <wonderfuly@gmail.com>
+Copyright (c) 2012 wgx731 <wgx731@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -23,27 +23,40 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
+""" Nose test config file
 
-# 小黄鸡的ai，先自己尝试处理，没结果则交给simsimi
+    config sys path for testing
+"""
 
-import pkgutil
-import plugins
+import os
+import glob
+import sys
 
-plugin_modules = []
-for plugin_name in plugins.__all__:
-    __import__('plugins.%s' % plugin_name)
-    plugin_modules.append(getattr(plugins, plugin_name))
 
-# some magic here
-def magic(data, bot=None):
-    for plugin_module in plugin_modules:
-        try:
-            if plugin_module.test(data, bot):
-                return plugin_module.handle(data, bot)
-        except:
-            continue
+TEST_DIR = os.path.abspath(os.path.dirname(__file__))
+MAIN_CODE_DIR = os.path.abspath(os.path.join(TEST_DIR, os.path.pardir))
+PLUGINS_CODE_DIR = os.path.abspath(os.path.join(MAIN_CODE_DIR, "plugins"))
 
-    return '呵呵'
+# Result refers to result returned by plugin
+WRONG_KEY_WORD_ERROR = "Missing or wrong keyword should not have result."
+WRONG_RESULT_ERROR = "Correct keyword should have result."
+WRONG_RESULT_FORMAT_ERROR = "Result should have correct format."
 
-if __name__ == '__main__':
-    print magic({'message': '今天天气怎么样?'})
+
+class TestBase(object):
+
+    @classmethod
+    def clean_up(klass, path, wildcard):
+        os.chdir(path)
+        for rm_file in glob.glob(wildcard):
+            os.unlink(rm_file)
+
+    @classmethod
+    def setup_class(klass):
+        sys.stderr.write("\nRunning %s\n" % klass)
+
+    @classmethod
+    def teardown_class(klass):
+        klass.clean_up(TEST_DIR, "*.py?")
+        klass.clean_up(PLUGINS_CODE_DIR, "*.py?")
+        klass.clean_up(MAIN_CODE_DIR, "*.py?")

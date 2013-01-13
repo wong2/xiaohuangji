@@ -1,4 +1,12 @@
 *.pyc
+*un~
 my_accounts.py
 my_filterconfig.py
 settings.py
+renren_pro.py
+private.sh
+tools
+bin/
+local/
+lib/
+include/
