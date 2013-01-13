@@ -59,6 +59,8 @@ class TestArithmetic(TestBase):
         _ut_test('2 * 4+ 5/3= ？', True)
         _ut_test('2 * 4+ 5/3 是多少', True)
         _ut_test('2 * 4+ 5/3 是几', True)
+        _ut_test('2 * 4+ 5/3 等于多少', True)
+        _ut_test('2 * 4+ 5/3 等于几', True)
         _ut_test('sys.exit(-1)', False)
         _ut_test('sys.exit(-1) = ?', True)
 

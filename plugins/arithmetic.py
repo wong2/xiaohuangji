@@ -40,7 +40,7 @@ from timeout import timeout, TimeoutException
 try:
     from settings import AI_ARITHMETIC_REGEX_TEST
 except:
-    AI_ARITHMETIC_REGEX_TEST = '([ \(\.\)0-9+\-*/]+)((\s*=\s*(\?|？))|(\s*是多少|\s*是几))'
+    AI_ARITHMETIC_REGEX_TEST = '([ \(\.\)0-9+\-*/]+)((\s*=\s*(\?|？))|(\s*(是多少|是几|等于几|等于多少)))'
 
 try:
     from settings import AI_ARITHMETIC_REGEX_HANDLE
