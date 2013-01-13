@@ -57,6 +57,3 @@ class TestVisit(TestBase):
 
     def test_visit_test_2(self):
         eq_(True, visit.test({'message': '求来访'}, None), WRONG_RESULT_ERROR)
-
-    def test_visit_handle_1(self):
-        eq_(True, visit.handle({'message': '求来访'}, None) in ['我来也', '马上就到', '来啦', '在路上了'], WRONG_RESULT_FORMAT_ERROR)
