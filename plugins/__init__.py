@@ -5,6 +5,7 @@ __all__ = [
     'earthquake',
     'airpollution',
     'weather',
+    'arithmetic',
     'simsimi',
 ]
 # 一行放一个，避免merge冲突
