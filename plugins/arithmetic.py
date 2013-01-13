@@ -36,7 +36,7 @@ from sympy.parsing import sympy_parser
 try:
     from settings import AI_ARITHMETIC_REGEX_TEST
 except:
-    AI_ARITHMETIC_REGEX_TEST = '([ \(\.\)0-9a-zA-Z,+\-*/]+)((\s*=\s*(\?|？))|(\s*(是多少|是几|等于几|等于多少)))'
+    AI_ARITHMETIC_REGEX_TEST = '([ \(\.\)0-9a-zA-Z,+\-*^/]+)((\s*=\s*(\?|？))|(\s*(是多少|是几|等于几|等于多少)))'
 
 try:
     from settings import AI_ARITHMETIC_REGEX_HANDLE
@@ -88,9 +88,7 @@ def cal(exp):
         return '太长了……小鸡才不算呢。╮(︶︿︶)╭'
 
     try:
-        #ans = str(eval(exp))
-        print exp
-        ans = str(sympy_parser.parse_expr(exp))
+        ans = str(sympy_parser.parse_expr(exp.replace('^', '**'))).replace('**', '^')
 
         if len(ans) > AI_ARITHMETIC_MAX_LEN_REPLY:
             return '这个数字太大了！鸡才懒得回你呢╮(︶︿︶)╭'

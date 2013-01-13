@@ -64,6 +64,7 @@ class TestArithmetic(TestBase):
         _ut_test('sys.exit(-1)', False)
         _ut_test('sys.exit(-1) = ?', True)
         _ut_test('sin(pi/2)=?', True)
+        _ut_test('x^(1+3)=?', True)
 
     def test_arithmetic_handle_normal_basic(self):
         _ut_handle('2 * 4+ 5/3 = ?', '不就是29/3嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
@@ -77,7 +78,11 @@ class TestArithmetic(TestBase):
     def test_arithmetic_handle_normal_advanced(self):
         _ut_handle('sin(pi/2)=?', '不就是1嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         _ut_handle('atan(1)=?', '不就是pi/4嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
-        _ut_handle('integrate(x * e ** (-x), x)=?', '不就是-e**(-x)*x/log(e) - e**(-x)/log(e)**2嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+        _ut_handle('integrate(x * e ** (-x), x)=?', '不就是-e^(-x)*x/log(e) - e^(-x)/log(e)^2嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+
+    def test_arithmetic_handle_with_pre_and_post_process(self):
+        # Test the conversion between "^" and "**"
+        _ut_handle('x^(1+3)=?', '不就是x^4嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
 
     def test_arithmetic_handle_exception(self):
         # Syntax error
