@@ -47,9 +47,14 @@ except:
     AI_ARITHMETIC_REGEX_HANDLE = AI_ARITHMETIC_REGEX_TEST
 
 try:
-    from settings import AI_ARITHMETIC_MAX_LEN
+    from settings import AI_ARITHMETIC_MAX_LEN_EXP
 except:
-    AI_ARITHMETIC_MAX_LEN = 100
+    AI_ARITHMETIC_MAX_LEN_EXP = 100
+
+try:
+    from settings import AI_ARITHMETIC_MAX_LEN_REPLY
+except:
+    AI_ARITHMETIC_MAX_LEN_REPLY = 50
 
 REGEX_TEST = re.compile(AI_ARITHMETIC_REGEX_TEST)
 REGEX_HANDLE = re.compile(AI_ARITHMETIC_REGEX_HANDLE)
@@ -69,12 +74,15 @@ def handle(data, bot):
         # regex from causing errors.
         return '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭'
 
-    if len(exp) > AI_ARITHMETIC_MAX_LEN:
+    if len(exp) > AI_ARITHMETIC_MAX_LEN_EXP:
         return '太长了……小鸡才不算呢。╮(︶︿︶)╭'
 
     try:
-        ans = eval(exp)
-        return '不就是%s嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % ans
+        ans = str(eval(exp))
+        if len(ans) > AI_ARITHMETIC_MAX_LEN_REPLY:
+            return '这个数字太大了！鸡才懒得回你呢╮(︶︿︶)╭'
+        else:
+            return '不就是%s嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % ans
     except ZeroDivisionError:
         return '你好笨啊！除零了。跟小鸡学下四则运算吧 （＃￣▽￣＃）'
     except SyntaxError:
@@ -91,8 +99,7 @@ def _ut_test(exp):
 
 
 def _ut_handle(exp):
-    print handle({'message': exp}, None), "\t", 'test("%s")' % exp
-
+    print handle({'message': exp}, None), "\t", 'handle("%s")' % exp
 
 if __name__ == '__main__':
     _ut_test('hello')
@@ -111,5 +118,8 @@ if __name__ == '__main__':
     _ut_handle('2 * 4+ 5/(3.0) 是几')
     _ut_handle('2 * 4+ 5/0 是几')
     _ut_handle('sys.exit(-1) = ?')
-    _ut_handle('1' + ('+1' * (AI_ARITHMETIC_MAX_LEN / 2 - 1)) + '=?')
-    _ut_handle('1' + ('+1' * (AI_ARITHMETIC_MAX_LEN / 2)) + '=?')
+    _ut_handle('1' + ('+1' * (AI_ARITHMETIC_MAX_LEN_EXP / 2 - 1)) + '=?')
+    _ut_handle('1' + ('+1' * (AI_ARITHMETIC_MAX_LEN_EXP / 2)) + '=?')
+    _ut_handle(('1' * (AI_ARITHMETIC_MAX_LEN_REPLY)) + '=?')
+    _ut_handle(('1' * (AI_ARITHMETIC_MAX_LEN_REPLY + 1)) + '=?')
+    _ut_handle('2**' + ('9' * (AI_ARITHMETIC_MAX_LEN_EXP - 3)) + '=?') # Test time consumption
