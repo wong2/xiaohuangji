@@ -24,15 +24,10 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-# Basic Arithmetic Module
+# Arithmetic Module
 #
-# 1. For security reasons, we only evaluate 4 preliminary operators,
-#    i.e. + - * /
-# 2. Non-programmer may find '5/3=1' non-intuitive. We stick to the
-#    Python defaults and do not modify it. One can use floating point
-#    expressions instead.
-# 3. Emoji from:
-#       http://zh.wikipedia.org/wiki/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7
+# Emoji from:
+#     http://zh.wikipedia.org/wiki/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7
 
 import re
 from timeout import timeout, TimeoutException
