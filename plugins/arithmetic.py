@@ -46,12 +46,12 @@ except:
 try:
     from settings import AI_ARITHMETIC_MAX_LEN_EXP
 except:
-    AI_ARITHMETIC_MAX_LEN_EXP = 100
+    AI_ARITHMETIC_MAX_LEN_EXP = 120
 
 try:
     from settings import AI_ARITHMETIC_MAX_LEN_REPLY
 except:
-    AI_ARITHMETIC_MAX_LEN_REPLY = 50
+    AI_ARITHMETIC_MAX_LEN_REPLY = 100
 
 try:
     from settings import AI_ARITHMETIC_EVAL_TIMEOUT
@@ -88,10 +88,17 @@ def cal(exp):
         return '太长了……小鸡才不算呢。╮(︶︿︶)╭'
 
     try:
-        ans = str(sympy_parser.parse_expr(exp.replace('^', '**'))).replace('**', '^')
+        ansexp = sympy_parser.parse_expr(exp.replace('^', '**'))
+        ans = str(ansexp).replace('**', '^')
+        i = 15
+        while len(ans) > AI_ARITHMETIC_MAX_LEN_EXP:
+            ans = str(ansexp.evalf(i)).replace('**', '^')
+            i = i - 1
+            if i <= 0:
+                break
 
         if len(ans) > AI_ARITHMETIC_MAX_LEN_REPLY:
-            return '这个数字太大了！鸡才懒得回你呢╮(︶︿︶)╭'
+            return '这个数字太长了！鸡才懒得回你呢╮(︶︿︶)╭'
         else:
             return '不就是%s嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % ans
     except ZeroDivisionError:
