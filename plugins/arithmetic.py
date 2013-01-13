@@ -26,11 +26,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 # Basic Arithmetic Module
 #
-# 1. For security reasons, we only evaluate 4 preliminary operators, 
-#    i.e. + - * / 
-# 2. Non-programmer may find '5/3=1' non-intuitive. We stick to the 
+# 1. For security reasons, we only evaluate 4 preliminary operators,
+#    i.e. + - * /
+# 2. Non-programmer may find '5/3=1' non-intuitive. We stick to the
 #    Python defaults and do not modify it. One can use floating point
-#    expressions instead. 
+#    expressions instead.
 # 3. Emoji from:
 #       http://zh.wikipedia.org/wiki/%E8%A1%A8%E6%83%85%E7%AC%A6%E5%8F%B7
 
@@ -54,23 +54,25 @@ except:
 REGEX_TEST = re.compile(AI_ARITHMETIC_REGEX_TEST)
 REGEX_HANDLE = re.compile(AI_ARITHMETIC_REGEX_HANDLE)
 
+
 def test(data, bot):
     return True if REGEX_TEST.search(data['message']) else False
+
 
 def handle(data, bot):
     try:
         exp = REGEX_HANDLE.search(data['message']).groups()[0]
     except:
-        # The flow is not supposed to reach here. 'data' is already 
+        # The flow is not supposed to reach here. 'data' is already
         # tested by AI_ARITHMETIC_REGEX_TEST so we should be able to
-        # read group()[0]. This is just to prevent your customized 
-        # regex from causing errors. 
+        # read group()[0]. This is just to prevent your customized
+        # regex from causing errors.
         return '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭'
 
     if len(exp) > AI_ARITHMETIC_MAX_LEN:
         return '太长了……小鸡才不算呢。╮(︶︿︶)╭'
 
-    try: 
+    try:
         ans = eval(exp)
         return '不就是%s嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % ans
     except ZeroDivisionError:
@@ -79,15 +81,18 @@ def handle(data, bot):
         return '(´･д･`) 这明显有问题嘛！！你确定没写错？'
     except Exception, e:
         #TODO:
-        #    Any logging convention in this project? We should log the 
+        #    Any logging convention in this project? We should log the
         #    error for further investigation
         return '好复杂哦，计算鸡也不会了 ╮(︶︿︶)╭'
+
 
 def _ut_test(exp):
     print test({'message': exp}, None), "\t", 'test("%s")' % exp
 
+
 def _ut_handle(exp):
     print handle({'message': exp}, None), "\t", 'test("%s")' % exp
+
 
 if __name__ == '__main__':
     _ut_test('hello')
