@@ -40,6 +40,7 @@ sys.path.append('..')
 import requests
 import cookielib
 import socket
+import random
 
 try:
     import MySQLdb
@@ -102,7 +103,7 @@ class SimSimi:
                         print e
                 return answer.encode('utf-8')
             except:
-                return '呵呵'
+                return random.choice(['呵呵', '。。。', '= =', '=。='])
         else:
             return '叫我干嘛'
 
