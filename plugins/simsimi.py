@@ -2,6 +2,14 @@
 
 """
 Copyright (c) 2012 wong2 <wonderfuly@gmail.com>
+Copyright (c) 2012 hupili <hpl1989@gmail.com>
+
+Original Author:
+    Wong2 <wonderfuly@gmail.com>
+Changes Statement:
+    Changes made by Pili Hu <hpl1989@gmail.com> on
+    Jan 13 2013:
+        Support Keepalive by using requests.Session
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
