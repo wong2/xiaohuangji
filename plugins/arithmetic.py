@@ -4,6 +4,14 @@
 """
 Copyright (c) 2013 Pili Hu <hpl1989@gmail.com>
 
+Original Author:
+        Phili Hu <hpl1989@gmail.com>
+
+Changed By
+        Qijiang Fan <fqj1994@gmail.com>
+        1. Convert expr to float values if accurate value is too long
+        2. Handle TokenError.
+
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 'Software'), to deal in the Software without restriction, including
