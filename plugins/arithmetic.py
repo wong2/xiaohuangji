@@ -36,6 +36,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import re
 from timeout import timeout, TimeoutException
+from sympy.parsing import sympy_parser
 
 try:
     from settings import AI_ARITHMETIC_REGEX_TEST
@@ -92,7 +93,9 @@ def cal(exp):
         return '太长了……小鸡才不算呢。╮(︶︿︶)╭'
 
     try:
-        ans = str(eval(exp))
+        #ans = str(eval(exp))
+        ans = str(sympy_parser.parse_expr(exp))
+
         if len(ans) > AI_ARITHMETIC_MAX_LEN_REPLY:
             return '这个数字太大了！鸡才懒得回你呢╮(︶︿︶)╭'
         else:

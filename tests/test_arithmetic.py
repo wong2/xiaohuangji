@@ -65,19 +65,20 @@ class TestArithmetic(TestBase):
         _ut_test('sys.exit(-1) = ?', True)
 
     def test_arithmetic_handle_normal(self):
-        _ut_handle('2 * 4+ 5/3 = ?', '不就是9嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
-        _ut_handle('2 * 4+ 5/3= ？', '不就是9嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
-        _ut_handle('2 * 4+ 5/3 是多少', '不就是9嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+        _ut_handle('2 * 4+ 5/3 = ?', '不就是29/3嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+        _ut_handle('2 * 4+ 5/3= ？', '不就是29/3嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+        _ut_handle('2 * 4+ 5/3 是多少', '不就是29/3嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         _ut_handle('2 * (4+ 5)/3 是几', '不就是6嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
-        _ut_handle('2 * 4+ 5/(3.0) 是几', '不就是9.66666666667嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
+        _ut_handle('2 * 4+ 5/(3.0) 是几', '不就是9.66666666666667嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         # The matched part is "(-1)" not "sys.exit(-1)"
         _ut_handle('sys.exit(-1) = ?', '不就是-1嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
 
     def test_arithmetic_handle_exception(self):
         # Syntax error
         _ut_handle('x *4+ 5/3 =?', '(´･д･`) 这明显有问题嘛！！你确定没写错？')
-        # Zero division error
-        _ut_handle('2 * 4+ 5/0 是几', '你好笨啊！除零了。跟小鸡学下四则运算吧 （＃￣▽￣＃）')
+        # Zero division: error in Python eval; infinity in sympy
+        #_ut_handle('2 * 4+ 5/0 是几', '你好笨啊！除零了。跟小鸡学下四则运算吧 （＃￣▽￣＃）')
+        _ut_handle('2 * 4+ 5/0 是几', '不就是oo嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／')
         # Long input expression
         _ut_handle('1' + ('+1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP / 2 - 1)) + '=?',
                    '不就是%d嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP / 2))

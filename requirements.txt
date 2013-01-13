@@ -16,3 +16,4 @@ rq==0.3.2
 six==1.2.0
 times==0.6
 wsgiref==0.1.2
+sympy==0.7.2
