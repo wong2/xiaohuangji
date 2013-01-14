@@ -100,7 +100,7 @@ class TestArithmetic(TestBase):
         _ut_handle('1' + ('+1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_EXP / 2)) + '=?', '太长了……小鸡才不算呢。╮(︶︿︶)╭')
         _ut_handle(('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY)) + '=?',
                    '不就是%s嘛。啦啦啦……我是计算鸡…… ＼（￣︶￣）／' % ('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY)))
-        _ut_handle(('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY + 1)) + '=?', '这个数字太大了！鸡才懒得回你呢╮(︶︿︶)╭')
+        _ut_handle(('1' * (arithmetic.AI_ARITHMETIC_MAX_LEN_REPLY + 1)) + '=?', '这个数字太长了！鸡才懒得回你呢╮(︶︿︶)╭')
 
     def test_arithmetic_handle_false_flow(self):
         # The following text will not get True from test(). It will not
@@ -117,4 +117,5 @@ def _ut_test(exp, ret):
 
 
 def _ut_handle(exp, ret):
+    print exp, ': ', ret, '\n'
     eq_(ret, arithmetic.handle({'message': exp}, None), WRONG_RESULT_ERROR)
