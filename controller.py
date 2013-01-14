@@ -42,7 +42,7 @@ import sys
 import redis
 
 try:
-    from renren_pro import RenRen
+    from renren_pro import RenRenPro as RenRen
 except:
     from renren import RenRen
 try:
