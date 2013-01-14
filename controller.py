@@ -55,7 +55,7 @@ except:
     REDIS_HOST = 'localhost'
 
 # 匹配自己名字的正则
-self_match_pattern = re.compile('<a.*@小黄鸡.*</a>')
+self_match_pattern = re.compile('@小黄鸡(\(601621937\))?')
 
 
 # 登录账号得到bot
@@ -97,7 +97,7 @@ def getNotiData(bot, data):
     content = ''
     # 只有在状态里面@才走这步
     if ntype == NTYPES['at_in_status'] and data['replied_id'] == data['from']:
-        content = data['doing_content']
+        content = self_match_pattern.sub('', data['doing_content'].encode('utf-8'))
     else:
         payloads.update({
             'author_id': data['from'],
