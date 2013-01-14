@@ -104,7 +104,12 @@ def getNotiData(bot, data):
             'author_name': data['from_name'],
             'reply_id': data['replied_id']
         })
-        content = data['reply_content']
+
+        if ntype == NTYPES['reply_in_status_comment']:
+            content = data['reply_content']
+        else:
+            content = data['doing_content']
+
         content_s = content.split(u'\uff1a', 1)
         if len(content_s) == 1:
             content_s = content.split(': ', 1)
@@ -126,7 +131,7 @@ def reply(data):
         return
 
     # 不要自问自答
-    if 'author_name' in data and '小黄鸡' in data['author_name'].encode('utf-8'):
+    if '小黄鸡' in data.get('author_name', u'').encode('utf-8'):
         return
 
     print 'handling comment', data, '\n'

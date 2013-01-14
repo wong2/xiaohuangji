@@ -53,7 +53,6 @@ def handle(bot, notification):
 # 得到人人上的通知，处理之
 def process(bot, just_clear=False):
     notifications = bot.getNotifications()
-    print notifications
 
     for notification in notifications:
         notify_id = notification['notify_id']
