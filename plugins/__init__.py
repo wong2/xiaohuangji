@@ -2,6 +2,7 @@
 __all__ = [
     'visit',
     'wikipedia',
+    'qiubai',
     'earthquake',
     'airpollution',
     'weather',
