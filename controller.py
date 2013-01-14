@@ -57,6 +57,7 @@ except:
 # 匹配自己名字的正则
 self_match_pattern = re.compile('<a.*@小黄鸡.*</a>')
 
+
 # 登录账号得到bot
 def getBots(accounts):
     if 'main.py' in sys.argv[0]:
@@ -81,50 +82,43 @@ def getBots(accounts):
 
 bots = getBots(accounts)
 
+
 # 根据通知得到该回复的更详细信息
 def getNotiData(bot, data):
-    owner_id, doing_id = data['owner_id'], data['doing_id']
+    owner_id, doing_id = data['owner'], data['doing_id']
 
     payloads = {
-      'owner_id': owner_id,
-      'doing_id': doing_id
+        'owner_id': owner_id,
+        'doing_id': doing_id
     }
 
-    ntype = data['ntype']
+    ntype = data['type']
 
     content = ''
     # 只有在状态里面@才走这步
-    if ntype == NTYPES['at_in_status'] and ( (not data['reply_id']) or data['reply_id'] == int(data['owner_id']) ):
-        doing = bot.getDoingById(owner_id, doing_id)
-        if doing:
-            content = self_match_pattern.sub('', doing['content'].encode('utf-8'))
-        else:
-            return None, None
+    if ntype == NTYPES['at_in_status'] and data['replied_id'] == data['from']:
+        content = data['doing_content']
     else:
-        reply_id = data['reply_id']
-        comment = bot.getCommentById(owner_id, doing_id, reply_id)
-        if comment:
-            payloads.update({
-                'author_id': comment['ownerId'],
-                'author_name': comment['ubname'],
-                'reply_id': reply_id
-            })
-            content = comment['replyContent']
-            content_s = content.split(u'\uff1a', 1)
-            if len(content_s) == 1:
-                content_s = content.split(': ', 1)
-            if len(content_s) == 1:
-                content_s = content.split(':', 1)
-            content = content_s[-1].encode('utf-8')
-            print content
-        else:
-            return None, None
+        payloads.update({
+            'author_id': data['from'],
+            'author_name': data['from_name'],
+            'reply_id': data['replied_id']
+        })
+        content = data['reply_content']
+        content_s = content.split(u'\uff1a', 1)
+        if len(content_s) == 1:
+            content_s = content.split(': ', 1)
+        if len(content_s) == 1:
+            content_s = content.split(':', 1)
+        content = content_s[-1].encode('utf-8')
+        print content
 
-    return payloads, content
+    return payloads, content.strip()
+
 
 # 得到数据，找到答案，发送回复
 def reply(data):
-    bot = bots[0] # 现在只有一只小鸡了，且没了评论限制
+    bot = bots[0]  # 现在只有一只小鸡了，且没了评论限制
 
     data, message = getNotiData(bot, data)
 
