@@ -61,7 +61,7 @@ def process(bot, just_clear=False):
 
         # 如果已经处理过了, 或在执行清空消息脚本
         if redis_conn.get(notify_id) or just_clear:
-            print 'get duplicate notification', notification
+            print 'clear' if just_clear else 'get duplicate notification', notification
             return
 
         try:
