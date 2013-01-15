@@ -163,8 +163,9 @@ class RenRen:
         r = self.get(url)
         try:
             result = json.loads(r.text, strict=False)
-        except:
-            print 'error'
+        except Exception, e:
+            print 'error', e
+            result = []
         return result
 
     def removeNotification(self, notify_id):
