@@ -159,7 +159,7 @@ class RenRen:
         return r.json()
 
     def getNotifications(self):
-        url = 'http://notify.renren.com/rmessage/get?getbybigtype=1&bigtype=1&limit=999&begin=0&view=17'
+        url = 'http://notify.renren.com/rmessage/get?getbybigtype=1&bigtype=1&limit=50&begin=0&view=17'
         r = self.get(url)
         try:
             result = json.loads(r.text, strict=False)
