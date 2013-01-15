@@ -56,6 +56,7 @@ except:
 
 # 匹配自己名字的正则
 self_match_pattern = re.compile('@小黄鸡(\(601621937\))?')
+self_match_pattern_reply = re.compile('<a.*@小黄鸡.*</a>')
 
 
 # 登录账号得到bot
@@ -111,13 +112,14 @@ def getNotiData(bot, data):
                 'author_name': comment['ubname'],
                 'reply_id': reply_id
             })
-            content = comment['replyContent']
-            content_s = content.split(u'\uff1a', 1)
+            content = comment['replyContent'].encode('utf-8')
+            content = self_match_pattern_reply.sub('', content)
+            content_s = content.split('：', 1)
             if len(content_s) == 1:
                 content_s = content.split(': ', 1)
             if len(content_s) == 1:
                 content_s = content.split(':', 1)
-            content = content_s[-1].encode('utf-8')
+            content = content_s[-1]
             print content
         else:
             return None, None
