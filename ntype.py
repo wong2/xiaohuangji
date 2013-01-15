@@ -27,6 +27,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # 通知类型
 
 NTYPES = {
-    'reply_in_status_comment': 16,
-    'at_in_status': 196
+    'reply_in_status_comment': '16',
+    'at_in_status': '196'
 }

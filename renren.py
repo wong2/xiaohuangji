@@ -159,13 +159,16 @@ class RenRen:
         return r.json()
 
     def getNotifications(self):
-        url = 'http://notify.renren.com/rmessage/get?getbybigtype=1&bigtype=1&limit=999&begin=0&view=16&random=' + str(random.random())
+        url = 'http://notify.renren.com/rmessage/get?getbybigtype=1&bigtype=1&limit=999&begin=0&view=17'
         r = self.get(url)
         try:
             result = json.loads(r.text, strict=False)
         except:
             print 'error'
         return result
+
+    def removeNotification(self, notify_id):
+        self.get('http://notify.renren.com/rmessage/remove?nl=' + str(notify_id))
 
     def getDoings(self, uid, page=0):
         url = 'http://status.renren.com/GetSomeomeDoingList.do?userId=%s&curpage=%d' % (str(uid), page)
