@@ -193,7 +193,7 @@ class RenRen:
 
     def getCommentById(self, owner_id, doing_id, comment_id):
         comments = self.getDoingComments(owner_id, doing_id)
-        comment = filter(lambda comment: comment['id'] == comment_id, comments)
+        comment = filter(lambda comment: comment['id'] == int(comment_id), comments)
         return comment[0] if comment else None
 
     def addComment(self, data):

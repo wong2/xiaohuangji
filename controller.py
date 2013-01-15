@@ -101,6 +101,7 @@ def getNotiData(bot, data):
     else:
         reply_id = data['replied_id']
         comment = bot.getCommentById(owner_id, doing_id, reply_id)
+        print owner_id, doing_id, reply_id, comment
         if comment:
             payloads.update({
                 'author_id': comment['ownerId'],
