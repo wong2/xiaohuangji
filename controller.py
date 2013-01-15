@@ -99,9 +99,12 @@ def getNotiData(bot, data):
     if ntype == NTYPES['at_in_status'] and data['replied_id'] == data['from']:
         content = self_match_pattern.sub('', data['doing_content'].encode('utf-8'))
     else:
+        # 防止在自己状态下@自己的时候有两条评论
+        if ntype == NTYPES['at_in_status'] and owner_id == '601621937':
+            return None, None
+
         reply_id = data['replied_id']
         comment = bot.getCommentById(owner_id, doing_id, reply_id)
-        print owner_id, doing_id, reply_id, comment
         if comment:
             payloads.update({
                 'author_id': comment['ownerId'],
