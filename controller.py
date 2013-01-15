@@ -99,24 +99,24 @@ def getNotiData(bot, data):
     if ntype == NTYPES['at_in_status'] and data['replied_id'] == data['from']:
         content = self_match_pattern.sub('', data['doing_content'].encode('utf-8'))
     else:
-        payloads.update({
-            'author_id': data['from'],
-            'author_name': data['from_name'],
-            'reply_id': data['replied_id']
-        })
-
-        if ntype == NTYPES['reply_in_status_comment']:
-            content = data['reply_content']
+        reply_id = data['replied_id']
+        comment = bot.getCommentById(owner_id, doing_id, reply_id)
+        if comment:
+            payloads.update({
+                'author_id': comment['ownerId'],
+                'author_name': comment['ubname'],
+                'reply_id': reply_id
+            })
+            content = comment['replyContent']
+            content_s = content.split(u'\uff1a', 1)
+            if len(content_s) == 1:
+                content_s = content.split(': ', 1)
+            if len(content_s) == 1:
+                content_s = content.split(':', 1)
+            content = content_s[-1].encode('utf-8')
+            print content
         else:
-            content = data['doing_content']
-
-        content_s = content.split(u'\uff1a', 1)
-        if len(content_s) == 1:
-            content_s = content.split(': ', 1)
-        if len(content_s) == 1:
-            content_s = content.split(':', 1)
-        content = content_s[-1].encode('utf-8')
-        print content
+            return None, None
 
     return payloads, content.strip()
 
