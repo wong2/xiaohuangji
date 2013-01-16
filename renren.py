@@ -198,13 +198,28 @@ class RenRen:
         return comment[0] if comment else None
 
     def addComment(self, data):
+        return {
+            'status': self.addStatusComment,
+            'album' : self.addAlbumComment,
+            'photo' : self.addPhotoComment,
+            'blog'  : self.addBlogComment,
+            'share' : self.addStatusComment,
+            'gossip': self.addGossip
+        }[data['type']](data)
+
+    def sendComment(self, url, payloads):
+        r = self.post(url, payloads)
+        r.raise_for_status()
+        return r.json()
+
+    # 评论状态
+    def addStatusComment(self, data):
         url = 'http://status.renren.com/feedcommentreply.do'
-        #url = 'http://page.renren.com/doing/reply'
 
         payloads = {
             't': 3,
             'rpLayer': 0,
-            'source': data['doing_id'],
+            'source': data['source_id'],
             'owner': data['owner_id'],
             'c': data['message']
         }
@@ -218,13 +233,85 @@ class RenRen:
                 'c': '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message'])
             })
 
-        print self.email, 'going to send a comment: ', payloads['c']
+        return self.sendComment(url, payloads)
 
-        r = self.post(url, payloads)
-        r.raise_for_status()
+    # 回复留言
+    def addGossip(self, data):
+        url = 'http://gossip.renren.com/gossip.do'
+        
+        payloads = {
+            'id': data['owner_id'], 
+            'only_to_me': 1,
+            'mode': 'conversation',
+            'cc': data['author_id'],
+            'body': data['message'],
+            'ref':'http://gossip.renren.com/getgossiplist.do'
+        }
 
-        print 'comment sent', r.json()
-        return r.json()
+        return self.sendComment(url, payloads)
+
+    # 回复分享
+    def addShareComment(self, data):
+        url = 'http://share.renren.com/share/addComment.do'
+        
+        payloads = {
+            'comment': '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message']),
+            'shareId' : data['source_id'],
+            'shareOwner': data['owner_id'],
+            'replyToCommentId': data['reply_id'],
+            'repetNo' : data['author_id']
+        }
+
+        return self.sendComment(url, payloads)
+
+    # 回复日志
+    def addBlogComment(self, data):
+        url = 'http://blog.renren.com/PostComment.do'
+        
+        payloads = {
+            'body': '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message']),
+            'feedComment': 'true',
+            'guestName': '小黄鸡', 
+            'id' : data['source_id'],
+            'only_to_me': 0,
+            'owner': data['owner_id'],
+            'replyCommentId': data['reply_id'],
+            'to': data['author_id']
+        }
+
+        return self.sendComment(url, payloads)
+
+    # 回复相册
+    def addAlbumComment(self, data):
+        url = 'http://photo.renren.com/photo/%d/album-%d/comment' % (data['owner_id'], data['source_id'])
+        
+        payloads = {
+            'id': data['source_id'],
+            'only_to_me' : 'false',
+            'body': '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message']),
+            'feedComment' : 'true', 
+            'owner' : data['owner_id'],
+            'replyCommentId' : data['reply_id'],
+            'to' : data['author_id']
+        }
+
+        return self.sendComment(url, payloads)
+
+    def addPhotoComment(self, data):
+        url = 'http://photo.renren.com/photo/%d/photo-%d/comment' % (data['owner_id'], data['source_id'])
+        
+        payloads = {
+            'guestName': '小黄鸡',
+            'body': '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message']),
+            'feedComment' : 'true',
+            'owner' : data['owner_id'],
+            'realWhisper':'false',
+            'replyCommentId' : data['reply_id'],
+            'to' : data['author_id']
+        }
+
+        return self.sendComment(url, payloads)
+
 
     # 访问某人页面
     def visit(self, uid):

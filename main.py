@@ -45,7 +45,7 @@ q = Queue(connection=redis_conn)
 
 def handle(bot, notification):
     print time.strftime('%Y-%m-%d %I:%M:%S', time.localtime(time.time())), 'got notification'
-    if notification['type'] in NTYPES.values():
+    if int(notification['type']) in NTYPES.values():
         # 进入消息队列
         q.enqueue(reply, notification)
 

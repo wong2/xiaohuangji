@@ -83,45 +83,55 @@ def getBots(accounts):
 bots = getBots(accounts)
 
 
+# 从一条评论里提取出内容，去掉'回复xx:'和'@小黄鸡'
+def extractContent(message):
+    content = self_match_pattern.sub('', message)
+    content_s = content.split('：', 1)
+    if len(content_s) == 1:
+        content_s = content.split(': ', 1)
+    if len(content_s) == 1:
+        content_s = content.split(':', 1)
+    content = content_s[-1]
+    return content
+
 # 根据通知得到该回复的更详细信息
 def getNotiData(bot, data):
-    owner_id, doing_id = data['owner'], data['doing_id']
+    ntype, content = int(data['type']), ''
 
     payloads = {
-        'owner_id': owner_id,
-        'doing_id': doing_id
+        'owner_id': data['owner'],
+        'source_id': data['source']
     }
 
-    ntype = data['type']
+    if ntype == NTYPES['at_in_status'] or ntype == NTYPES['reply_in_status_comment']:
+        owner_id, doing_id = data['owner'], data['doing_id']
 
-    content = ''
-    # 只有在状态里面@才走这步
-    if ntype == NTYPES['at_in_status'] and data['replied_id'] == data['from']:
-        content = self_match_pattern.sub('', data['doing_content'].encode('utf-8'))
-    else:
-        # 防止在自己状态下@自己的时候有两条评论
-        if ntype == NTYPES['at_in_status'] and owner_id == '601621937':
-            return None, None
+        payloads['type'] = 'status'
 
-        reply_id = data['replied_id']
-        comment = bot.getCommentById(owner_id, doing_id, reply_id)
-        if comment:
-            payloads.update({
-                'author_id': comment['ownerId'],
-                'author_name': comment['ubname'],
-                'reply_id': reply_id
-            })
-            content = comment['replyContent'].encode('utf-8')
-            content = self_match_pattern.sub('', content)
-            content_s = content.split('：', 1)
-            if len(content_s) == 1:
-                content_s = content.split(': ', 1)
-            if len(content_s) == 1:
-                content_s = content.split(':', 1)
-            content = content_s[-1]
-            print content
+        if ntype == NTYPES['at_in_status'] and data['replied_id'] == data['from']:
+            content = self_match_pattern.sub('', data['doing_content'].encode('utf-8'))
         else:
-            return None, None
+            # 防止在自己状态下@自己的时候有两条评论
+            if ntype == NTYPES['at_in_status'] and owner_id == '601621937':
+                return None, None
+            reply_id = data['replied_id']
+            comment = bot.getCommentById(owner_id, doing_id, reply_id)
+            if comment:
+                payloads.update({
+                    'author_id': comment['ownerId'],
+                    'author_name': comment['ubname'],
+                    'reply_id': reply_id
+                })
+                content = extractContent(comment['replyContent'].encode('utf-8'))
+            else:
+                return None, None
+
+    elif ntype == NTYPES['gossip']:
+        payloads.update({
+            'type': 'gossip',
+            'author_id': data['from']
+        })
+        content = data['msg_context'].encode('utf-8')
 
     return payloads, content.strip()
 
@@ -152,6 +162,6 @@ def reply(data):
         return
 
     if code == 10:
-        print 'some words are blocked'
+        print 'some server error'
     else:
         raise Exception('Error sending comment by bot %s' % bot.email)
