@@ -38,29 +38,12 @@ import sys
 sys.path.append('..')
 
 import requests
-import cookielib
-import socket
 import random
-
-try:
-    import MySQLdb
-    from settings import MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DBNAME
-    use_mysql = True
-except:
-    use_mysql = False
 
 try:
     from settings import SIMSIMI_KEY
 except:
     SIMSIMI_KEY = ''
-
-if use_mysql:
-    mysqldb = MySQLdb.connect(host=MYSQL_HOST, port=3306, user=MYSQL_USER, passwd=MYSQL_PASS, db=MYSQL_DBNAME, charset='utf8', use_unicode=False)
-    cursor = mysqldb.cursor()
-    try:
-        workerhostname = socket.gethostname()
-    except:
-        workerhostname = 'unknown'
 
 
 class SimSimi:
@@ -94,14 +77,7 @@ class SimSimi:
         if message:
             r = self.getSimSimiResult(message, 'normal' if not SIMSIMI_KEY else 'api')
             try:
-                answer = r.json()['response']
-                if use_mysql:
-                    sql = "INSERT INTO question_and_answers (question, answer, worker) VALUES(%s, %s, %s)"
-                    try:
-                        cursor.execute(sql, (message, answer, workerhostname))
-                    except Exception as e:
-                        print e
-                return answer.encode('utf-8')
+                answer = r.json()['response'].encode('utf-8')
             except:
                 return random.choice(['呵呵', '。。。', '= =', '=。='])
         else:
