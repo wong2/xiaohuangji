@@ -28,6 +28,5 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 NTYPES = {
     'reply_in_status_comment': 16,
-    'at_in_status': 196,
-    'gossip': 14
+    'at_in_status': 196
 }

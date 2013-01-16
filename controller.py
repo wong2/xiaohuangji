@@ -125,13 +125,8 @@ def getNotiData(bot, data):
                 content = extractContent(comment['replyContent'].encode('utf-8'))
             else:
                 return None, None
-
-    elif ntype == NTYPES['gossip']:
-        payloads.update({
-            'type': 'gossip',
-            'author_id': data['from']
-        })
-        content = data['msg_context'].encode('utf-8')
+    else:
+        return None, None
 
     return payloads, content.strip()
 
