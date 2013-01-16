@@ -78,6 +78,7 @@ class SimSimi:
             r = self.getSimSimiResult(message, 'normal' if not SIMSIMI_KEY else 'api')
             try:
                 answer = r.json()['response'].encode('utf-8')
+                return answer
             except:
                 return random.choice(['呵呵', '。。。', '= =', '=。='])
         else:
