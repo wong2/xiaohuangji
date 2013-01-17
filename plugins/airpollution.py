@@ -55,9 +55,11 @@ def get_desc(cityname, cityshort):
     r = urllib2.urlopen('http://www.aqicn.info/?city=%s&lang=cn' % (cityshort), timeout=60)
     p = r.read()
     m = re.search('%s[^"]*的空气质量([^"]*)' % (cityname), p)
-    if m:
-        kv.setex('airpollution.%s' % (cityshort), m.group(0), 1800)
-        return m.group(0)
+    m_aqiindex = re.search(r'整体空气质量指数为([0-9]*)', p)
+    if m and m_aqiindex:
+        text = m.group(0).replace('。', '，').replace('.', '') + '，整体AQI指数为：' + m_aqiindex.group(1)
+        kv.setex('airpollution.%s' % (cityshort), text, 1800)
+        return text
     else:
         raise Exception
 
