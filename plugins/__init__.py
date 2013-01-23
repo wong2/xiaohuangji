@@ -8,5 +8,6 @@ __all__ = [
     'weather',
     'arithmetic',
     'simsimi',
+    'calc24',
 ]
 # 一行放一个，避免merge冲突
