@@ -61,6 +61,18 @@ class TestCalc24(TestBase):
         eq_(True, calc24.test({'message': 'Hello World 算24点 [1,2,4,5]'},
             None), WRONG_RESULT_ERROR)
 
+    def test_calc24_test_4(self):
+        eq_(True, calc24.test({'message': 'Hello World 算1234567点 [1,2,4,5]'},
+            None), WRONG_RESULT_ERROR)
+
+    def test_calc24_test_5(self):
+        eq_(True, calc24.test({'message': 'Hello World 算-123点 [1,2,4,5]'},
+            None), WRONG_RESULT_ERROR)
+
+    def test_calc24_test_6(self):
+        eq_(True, calc24.test({'message': 'Hello World 算-点 [1,2,4,5]'},
+            None), WRONG_RESULT_ERROR)
+
     def test_calc24_handle_1(self):
         result = calc24.handle({'message': 'Hello World 算24点 [1,2,4,5]',
                                 'author_id': 'Wizmann'}, None)
@@ -72,6 +84,21 @@ class TestCalc24(TestBase):
         eq_(True, '答案' in result, WRONG_RESULT_FORMAT_ERROR)
 
     def test_calc24_handle_3(self):
-        result = calc24.handle({'message': 'Hello World 算24点 [F,U,C,K]',
+        result = calc24.handle({'message': 'Hello World 算24点 [Z,U,C,K]',
                                 'author_id': 'Kuuy'}, None)
         eq_(True, '没有那种牌' in result, WRONG_RESULT_FORMAT_ERROR)
+
+    def test_calc24_handle_4(self):
+        result = calc24.handle({'message': 'Hello World 算24点 [F,U,C,K]',
+                                'author_id': 'Kuuy'}, None)
+        eq_(True, 'Wizmann' in result, WRONG_RESULT_FORMAT_ERROR)
+
+    def test_calc24_handle_5(self):
+        result = calc24.handle({'message': 'Hello World 算24点 [3,8,3,8]',
+                                'author_id': 'Wizmann'}, None)
+        eq_(True, '答案' in result, WRONG_RESULT_FORMAT_ERROR)
+
+    def test_calc24_handle_6(self):
+        result = calc24.handle({'message': 'Hello World 算576点 [3,8,3,8]',
+                                'author_id': 'Wizmann'}, None)
+        eq_(True, '答案' in result, WRONG_RESULT_FORMAT_ERROR)
