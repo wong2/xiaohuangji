@@ -36,14 +36,15 @@ class Calc24db:
     def __init__(self):
         db_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__)),
-            'data', 'calc24.sqlite3')
+            'data', 'CalcXdb.sqlite3')
         self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
 
-    def search(self, nums):
-        SQL = "SELECT `answer` FROM `calc24` WHERE `hashcode`={0}"
+    def search(self, ans, nums):
+        SQL = "SELECT `formula` FROM `calcx` \
+                WHERE `ans`={0} AND `hashcode`={1}"
         hashcode = reduce(lambda x, y: x * 13 + y, sorted(nums))
-        self.cursor.execute(SQL.format(hashcode))
+        self.cursor.execute(SQL.format(ans, hashcode))
         answer = self.cursor.fetchall()
         if answer:
             return answer[0][0]
@@ -64,16 +65,16 @@ class Calc24Exception(Exception):
 
 def test(data, bot):
     message = data['message']
-    if '算24点' not in message \
-            or not re.match('(?:.*\[)(.+)(?:\][.]*)', message):
+    if not re.search('算[\d-]+点', message) \
+            or not re.search('(?:.*\[)(.+)(?:\][.]*)', message):
         return False
     else:
         return True
 
 
-def solve(nums):
+def solve(ans, nums):
     try:
-        s = calc24db.search(nums)
+        s = calc24db.search(ans, nums)
         if(s):
             return s.strip()
         else:
@@ -85,12 +86,21 @@ def solve(nums):
 def handle(data, bot):
     message = data['message']
     query = re.findall('(?:.*\[)(.+)(?:\][.]*)', message)
+    ans = re.findall('算([\d-]+)点', message)
     try:
-        if len(query) == 0:
+        if len(query) == 0 or len(ans) == 0:
             raise Calc24Exception("表达式错误哦~")
         else:
+            try:
+                ans = int(ans[0])
+            except:
+                raise Calc24Exception("表达式错误哦~")
             nums = map(lambda x: x.strip(), query[0].split(','))
-            if len(nums) != 4:
+            if ''.join(nums) == 'FUCK':
+                return 'Coded by Wizmann~'
+            elif ''.join(nums) == 'SEXY':
+                return 'I love SEX!'
+            elif len(nums) != 4:
                 raise Calc24Exception("参数错误哦~")
             else:
                 def conv(ch):
@@ -108,8 +118,8 @@ def handle(data, bot):
                         else:
                             raise Calc24Exception("明明没有那种牌嘛～")
                 nums = map(conv, nums)
-                ans = solve(nums)
-                return "没有答案哦~" if not ans else '答案是：' + ans
+                formula = solve(ans, nums)
+                return "没有答案哦~" if not formula else '答案是：' + formula
     except Exception, e:
         return str(e)
 
@@ -117,12 +127,37 @@ def handle(data, bot):
 if(__name__ == '__main__'):
     print test({'message': "@小黄鸡  算24点 不算烧死 [1,2,3,4]你好世界"}, None)
     print test({'message': "@小黄鸡  算24点 不算烧死 [A,A,A,A]你好世界"}, None)
+    print test({'message': "@小黄鸡  算16点 不算烧死 [4,4,4,4]你好世界"}, None)
     print test({'message': 'Hello World 算24点'}, None)
     print handle({'message':
                   '@小黄鸡  算24点 不算烧死 [Q,K,A,A]你好世界',
                   'author_id': 'Wizmann'}, None)
     print handle({'message':
                   '@小黄鸡  算24点 不算烧死 [A,A,A,A]你好世界',
+                  'author_id': 'Wizmann'}, None)
+    print handle({'message':
+                  '@小黄鸡  算-2点 不算烧死 [A,A,A,A]你好世界',
+                  'author_id': 'Wizmann'}, None)
+    print handle({'message':
+                  '@小黄鸡  算----------点 不算烧死 [3,3,8,8]你好世界',
+                  'author_id': 'Wizmann'}, None)
+    print handle({'message':
+                  '@小黄鸡  算24点 不算烧死 [3,3,8,8]你好世界',
+                  'author_id': 'Wizmann'}, None)
+    print handle({'message':
+                  '@小黄鸡  算16点 不算烧死 [4,4,4,4]你好世界',
+                  'author_id': 'Wizmann'}, None)
+    print handle({'message':
+                  '@小黄鸡  算256点 不算烧死 [8,8,4,4]你好世界',
+                  'author_id': 'Wizmann'}, None)
+    print handle({'message':
+                  '算132465点 [A,2,Q,K]',
+                  'author_id': 'Wizmann'}, None)
+    print handle({'message':
+                  '算0点 [1,K,Q,K]',
+                  'author_id': 'Wizmann'}, None)
+    print handle({'message':
+                  '算512点 [ZZ,2,Q,K]',
                   'author_id': 'Wizmann'}, None)
     print handle({'message': 'Hello World 算24点 [F,U,C,K]',
                  'author_id': 'Kuuy'}, None)
