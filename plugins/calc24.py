@@ -108,7 +108,7 @@ def handle(data, bot):
                         t = int(ch)
                     except:
                         t = ch
-                    if(1 <= t <= 10):
+                    if(1 <= t <= 13):
                         return t
                     else:
                         conv_dict = {'A': 1, 'J': 11, 'Q': 12, 'K': 13}
@@ -161,3 +161,5 @@ if(__name__ == '__main__'):
                   'author_id': 'Wizmann'}, None)
     print handle({'message': 'Hello World 算24点 [F,U,C,K]',
                  'author_id': 'Kuuy'}, None)
+
+    print handle({'message': 'Hello World 算24点 [1, 1, 12, 13]'}, None)
