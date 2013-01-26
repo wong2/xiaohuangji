@@ -25,8 +25,8 @@ the following conditions:
 
 # 维基百科
 
-import urllib2
-import urllib
+from pyquery import PyQuery
+import requests
 import re
 
 def test(data, bot=None):
@@ -38,45 +38,14 @@ def handle(data, bot=None):
         return wikipedia(m.groups()[0])
     raise Exception
 
-def remove(s):
-    ans = ''
-    while True:
-        i = s.find('<')
-        if i < 0:
-            ans += s
-            break
-        ans += s[:i]
-        s = s[i+1:]
-        s = s[s.find('>')+1:]
-    s = ans
-    ans = ''
-    while True:
-        i = s.find('[')
-        if i < 0:
-            ans += s
-            return ans
-        ans += s[:i]
-        s = s[i+1:]
-        s = s[s.find(']')+1:]
-
-
 def wikipedia(title):
-    url = 'http://zh.wikipedia.org/w/index.php?%s' % urllib.urlencode({'title': title, 'printable': 'yes', 'variant': 'zh-cn'})
-    req = urllib2.Request(url, headers={'User-Agent': "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-US) AppleWebKit/533.3 (KHTML, like Gecko) Chrome/5.0.354.0 Safari/533.3"})
-    wp = urllib2.urlopen(req, timeout=10)
-    html = wp.read()
-    #防止404，实际上似乎py会直接在urlopen的时候发现404并抛异常
-    if html.find('维基百科目前还没有与上述标题相同的条目') >= 0:
-        raise Exception
-    i = html.find('mw-content-text')
-    if i < 0:
-        raise Exception
-    html = html[i:]
-    html = html[html.find('<p>')+3:html.find('</p>')]
-    return remove(html)
-
+    r = requests.get('http://zh.wikipedia.org/w/index.php', params={'title': title, 'printable': 'yes', 'variant': 'zh-cn'}, timeout=10)
+    dom = PyQuery(r.text)
+    return dom('#mw-content-text > p:first').remove('sup')[0].text_content()
 
 if __name__ == '__main__':
-    for data in [ {'message': '什么是SVM  ????'}, {'message': '什么是薛定谔方程啊'} ]:
+    for message in ['什么是SVM  ????', '什么是薛定谔方程啊', '什么是CSS？']:
+        data = { 'message': message }
+        print message, test(data)
         if test(data):
             print handle(data)
