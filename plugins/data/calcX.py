@@ -39,7 +39,6 @@ CPU 2.3G + RAM 4G 用时为6分钟+
 By Moody _"Kuuy"_ Wizmann
 """
 
-from __future__ import division
 import sys
 import os
 import sqlite3
