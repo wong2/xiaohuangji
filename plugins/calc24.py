@@ -65,7 +65,7 @@ class Calc24Exception(Exception):
 
 def test(data, bot):
     message = data['message']
-    if not re.search('算[\d-]+点', message) \
+    if not re.search('算[G\d-]+点', message) \
             or not re.search('(?:.*\[)(.+)(?:\][.]*)', message):
         return False
     else:
@@ -86,13 +86,16 @@ def solve(ans, nums):
 def handle(data, bot):
     message = data['message']
     query = re.findall('(?:.*\[)(.+)(?:\][.]*)', message)
-    ans = re.findall('算([\d-]+)点', message)
+    ans = re.findall('算([G\d-]+)点', message)
     try:
         if len(query) == 0 or len(ans) == 0:
             raise Calc24Exception("表达式错误哦~")
         else:
             try:
-                ans = int(ans[0])
+                ans_str = ans[0]
+                if ans_str == 'G':
+                    return '啊啊啊！不要碰那里！'
+                ans = int(ans_str)
             except:
                 raise Calc24Exception("表达式错误哦~")
             nums = map(lambda x: x.strip(), query[0].split(','))
@@ -161,5 +164,5 @@ if(__name__ == '__main__'):
                   'author_id': 'Wizmann'}, None)
     print handle({'message': 'Hello World 算24点 [F,U,C,K]',
                  'author_id': 'Kuuy'}, None)
-
     print handle({'message': 'Hello World 算24点 [1, 1, 12, 13]'}, None)
+    print handle({'message': '算G点 [1, 1, 12, 13]'}, None)
