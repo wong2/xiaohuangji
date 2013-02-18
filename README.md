@@ -48,8 +48,4 @@
 
 插件具体例子见`plugins`目录
 
-插件编写好之后，请在tests目录添加对应的单元测试，具体可参考已有的测试代码，在主目录执行`nosetests -v`开始测试。
-
-### Wiki
-
-wiki中有关于程序流程的[简单说明](https://github.com/wong2/xiaohuangji/wiki/%E5%A6%82%E4%BD%95%E8%BF%90%E8%A1%8C)。
+插件编写好之后，请在tests目录添加对应的单元测试，具体可参考已有的测试代码，在主目录执行`nosetests -v`开始测试。(啊。。我发现我也懒得写单元测试了。。)
