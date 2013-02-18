@@ -28,7 +28,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import random
 
 def test(data, bot=None):
-    return '膜拜' in data['message']
+    message = data['message']
+    for word in ['膜拜', 'orz']:
+        if word in message:
+            return True
+    return False
 
 def handle(data, bot=None):
     mobai_icon = '(mb)'
@@ -36,4 +40,6 @@ def handle(data, bot=None):
     return mobai_icon * random.randrange(1, 10) + mobai_text * random.randrange(3)
 
 if __name__ == '__main__':
+    print test({'message': 'orz'})
+    print test({'message': 'rz'})
     print handle({'message': '来膜拜'})
