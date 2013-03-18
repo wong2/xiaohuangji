@@ -323,21 +323,9 @@ class RenRen:
 
         return self.sendComment(url, payloads)
 
-
     # 访问某人页面
     def visit(self, uid):
         self.get('http://www.renren.com/' + str(uid) + '/profile')
-
-    # 按生日随机一个人出来
-    def getPeopleByBirthday(self, year, month, day, gender='女生'):
-        url = 'http://browse.renren.com/sAjax.do?ref_search=searchResult_People_Tab&ajax=1&q=&s=0&act=search&offset=%d&sort=2&p=' % random.choice([0, 10])
-        params = '[{"t":"birt","month":"%d","year":"%d","day":"%d"},{"gend":"%s","t":"base"}]"}]' % (month, year, day, gender)
-        url += urllib.quote_plus(params)
-        r = self.get(url)
-        ele = PyQuery(random.choice(PyQuery(r.text)('#active_2012_module li strong a')))
-        name, link = ele.html(), ele.attr('href')
-        uid = re.search('id=(\d+)', link).groups()[0]
-        return name, 'http://www.renren.com/' + uid
 
     # 根据关键词搜索最新状态(全站)
     def searchStatus(self, keyword, max_length=20):
