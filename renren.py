@@ -38,11 +38,9 @@ import requests
 import json
 import re
 import random
-from urlparse import urlparse, parse_qsl
+import urllib
 from pyquery import PyQuery
-from ntype import NTYPES
 from encrypt import encryptString
-import sys
 import os
 
 
@@ -203,14 +201,17 @@ class RenRen:
             'album' : self.addAlbumComment,
             'photo' : self.addPhotoComment,
             'blog'  : self.addBlogComment,
-            'share' : self.addStatusComment,
+            'share' : self.addShareComment,
             'gossip': self.addGossip
         }[data['type']](data)
 
     def sendComment(self, url, payloads):
         r = self.post(url, payloads)
         r.raise_for_status()
-        return r.json()
+        try:
+            return r.json()
+        except:
+            return { 'code': 0 }
 
     # 评论状态
     def addStatusComment(self, data):
@@ -253,13 +254,18 @@ class RenRen:
     # 回复分享
     def addShareComment(self, data):
         url = 'http://share.renren.com/share/addComment.do'
+
+        if data.get('reply_id', None):
+            body = '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message']),
+        else:
+            body = data['message']
         
         payloads = {
-            'comment': '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message']),
+            'comment': body,
             'shareId' : data['source_id'],
             'shareOwner': data['owner_id'],
-            'replyToCommentId': data['reply_id'],
-            'repetNo' : data['author_id']
+            'replyToCommentId': data.get('reply_id', 0),
+            'repetNo' : data.get('author_id', 0)
         }
 
         return self.sendComment(url, payloads)
@@ -299,15 +305,20 @@ class RenRen:
 
     def addPhotoComment(self, data):
         url = 'http://photo.renren.com/photo/%d/photo-%d/comment' % (data['owner_id'], data['source_id'])
+
+        if 'author_name' in data:
+            body = '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message']),
+        else:
+            body = data['message']
         
         payloads = {
             'guestName': '小黄鸡',
-            'body': '回复%s：%s' % (data['author_name'].encode('utf-8'), data['message']),
             'feedComment' : 'true',
+            'body': body,
             'owner' : data['owner_id'],
             'realWhisper':'false',
-            'replyCommentId' : data['reply_id'],
-            'to' : data['author_id']
+            'replyCommentId' : data.get('reply_id', 0),
+            'to' : data.get('author_id', 0)
         }
 
         return self.sendComment(url, payloads)
@@ -317,9 +328,41 @@ class RenRen:
     def visit(self, uid):
         self.get('http://www.renren.com/' + str(uid) + '/profile')
 
+    # 按生日随机一个人出来
+    def getPeopleByBirthday(self, year, month, day, gender='女生'):
+        url = 'http://browse.renren.com/sAjax.do?ref_search=searchResult_People_Tab&ajax=1&q=&s=0&act=search&offset=%d&sort=2&p=' % random.choice([0, 10])
+        params = '[{"t":"birt","month":"%d","year":"%d","day":"%d"},{"gend":"%s","t":"base"}]"}]' % (month, year, day, gender)
+        url += urllib.quote_plus(params)
+        r = self.get(url)
+        ele = PyQuery(random.choice(PyQuery(r.text)('#active_2012_module li strong a')))
+        name, link = ele.html(), ele.attr('href')
+        uid = re.search('id=(\d+)', link).groups()[0]
+        return name, 'http://www.renren.com/' + uid
+
+    # 根据关键词搜索最新状态(全站)
+    def searchStatus(self, keyword, max_length=20):
+        url = 'http://browse.renren.com/s/status?offset=0&sort=1&range=0&q=%s&l=%d' % (keyword, max_length)
+        r = self.session.get(url, timeout=5)
+        status_elements = PyQuery(r.text)('.list_status .status_content')
+        id_pattern  = re.compile("forwardDoing\('(\d+)','(\d+)'\)")
+        results = []
+        for index, _ in enumerate(status_elements):
+            status_element = status_elements.eq(index)
+
+            # 跳过转发的
+            if status_element('.status_root_msg'):
+                continue
+
+            status_element = status_element('.status_content_footer')
+            status_time = status_element('span').text()
+            m = id_pattern.search(status_element('.share_status').attr('onclick'))
+            status_id, user_id = m.groups()
+            results.append( (int(user_id), int(status_id), status_time) )
+        return results
+
 if __name__ == '__main__':
     renren = RenRen()
     renren.login('email', 'password')
     info = renren.getUserInfo()
     print 'hello', info['hostname']
-    renren.visit(328748051)
+    print renren.searchStatus('么么哒')
