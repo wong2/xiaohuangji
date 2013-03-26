@@ -38,7 +38,6 @@ import requests
 import json
 import re
 import random
-import urllib
 from pyquery import PyQuery
 from encrypt import encryptString
 import os
@@ -62,10 +61,8 @@ class RenRen:
     def loginByCookie(self, cookie_path):
         with open(cookie_path) as fp:
             cookie_str = fp.read()
-            cookie_dict = dict([v.split('=', 1) for v in cookie_str.strip().split(';')])
-            self.session.cookies = requests.utils.cookiejar_from_dict(cookie_dict)
 
-        self.getToken()
+        self._loginByCookie(cookie_str)
 
     def saveCookie(self, cookie_path):
         with open(cookie_path, 'w') as fp:
