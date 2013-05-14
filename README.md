@@ -49,3 +49,9 @@
 插件具体例子见`plugins`目录
 
 插件编写好之后，请在tests目录添加对应的单元测试，具体可参考已有的测试代码，在主目录执行`nosetests -v`开始测试。(啊。。我发现我也懒得写单元测试了。。)
+
+### 捐助
+
+如果小黄鸡给你带来过欢乐，或者这份代码对你有所帮助，欢迎捐款请我喝一杯啤酒。:)
+
+<a href='http://me.alipay.com/wong2'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
