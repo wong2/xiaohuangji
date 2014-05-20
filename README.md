@@ -54,4 +54,4 @@
 
 如果小黄鸡给你带来过欢乐，或者这份代码对你有所帮助，欢迎捐款请我喝一杯啤酒。:)
 
-<a href='http://me.alipay.com/wong2'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
+<a href='http://me.xalipay.com/wong2'> <img src='https://img.alipay.com/sys/personalprod/style/mc/btn-index.png' /> </a>
